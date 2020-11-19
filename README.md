@@ -58,7 +58,7 @@ fslmaths handles much of the internal processing for FSL, and is a popular stand
 
 ![mricrogl](iguana.jpg)
 
-The first test examines the CPU performance, looking at the loading, scaling and transformation of the image data.
+The first test examines the CPU performance, looking at the loading, scaling and transformation of the image data. A portion of these operations use hand-tuned vectorized SIMD SSE2 instructions for the x86-64 CPUs, with generic scalar instructions for the M1. The M1 would obviously benefit from SIMD Neon/SVE code. From this perspective, the ability of the fanless M1 to outpace the 28w Intel MacBook is impressive.
 
 ![mricrogl](mricrogl.png)
 
