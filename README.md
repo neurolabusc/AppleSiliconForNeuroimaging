@@ -66,3 +66,7 @@ The second test examines the GPU compute performance, looking at generation of t
 
 ![mricrogl](mricrogl_gpu.png)
 
+## Conclusions
+
+It is remarkable that the M1 CPU in the MacBook Air has no fan, yet holds its own in these neuroimaging benchmarks. The promise of this architecture is hard to deny.
+
