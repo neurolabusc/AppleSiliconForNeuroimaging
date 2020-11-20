@@ -1,0 +1,60 @@
+i5-8259U
+function	time	
+fslmaths rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	104.43
+fslmaths rest.nii.gz  -bptf 77 8.68 out	926.76
+fslmaths rest.nii.gz -s 2.548 out	289.91
+fslmaths t1.nii.gz  -kernel boxv 7 -dilM out	181.76
+niimath_darwin rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	108.07
+niimath_darwin rest.nii.gz  -bptf 77 8.68 out	596.33
+niimath_darwin rest.nii.gz -s 2.548 out	144.94
+niimath_darwin t1.nii.gz  -kernel boxv 7 -dilM out	14.36
+niimath_darwin_parallel rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	31.17
+niimath_darwin_parallel rest.nii.gz  -bptf 77 8.68 out	153.08
+niimath_darwin_parallel rest.nii.gz -s 2.548 out	38.84
+niimath_darwin_parallel t1.nii.gz  -kernel boxv 7 -dilM out	9.88
+8700k
+function	time	
+fslmaths rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	81.43
+fslmaths rest.nii.gz  -bptf 77 8.68 out	1206.53
+fslmaths rest.nii.gz -s 2.548 out	202.11
+fslmaths t1.nii.gz  -kernel boxv 7 -dilM out	129.44
+niimath_linux rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	34.44
+niimath_linux rest.nii.gz  -bptf 77 8.68 out	424.76
+niimath_linux rest.nii.gz -s 2.548 out	68.81
+niimath_linux t1.nii.gz  -kernel boxv 7 -dilM out	7.83
+niimath_linux rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	14.13
+niimath_linux rest.nii.gz  -bptf 77 8.68 out	79.71
+niimath_linux rest.nii.gz -s 2.548 out	23.5
+niimath_linux t1.nii.gz  -kernel boxv 7 -dilM out	7.75
+3900X
+function	time	
+fslmaths rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	45.06
+fslmaths rest.nii.gz  -bptf 77 8.68 out	897.94
+fslmaths rest.nii.gz -s 2.548 out	149.99
+fslmaths t1.nii.gz  -kernel boxv 7 -dilM out	125.93
+niimath_linux rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	34.42
+niimath_linux rest.nii.gz  -bptf 77 8.68 out	350.81
+niimath_linux rest.nii.gz -s 2.548 out	63.09
+niimath_linux t1.nii.gz  -kernel boxv 7 -dilM out	6.54
+niimath_linux rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	10.81
+niimath_linux rest.nii.gz  -bptf 77 8.68 out	34.43
+niimath_linux rest.nii.gz -s 2.548 out	10.77
+niimath_linux t1.nii.gz  -kernel boxv 7 -dilM out	5.88
+M1
+function	time	
+fslmaths rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	78.68
+fslmaths rest.nii.gz  -bptf 77 8.68 out	649.46
+fslmaths rest.nii.gz -s 2.548 out	180.5
+fslmaths t1.nii.gz  -kernel boxv 7 -dilM out	153.68
+niimath_x86-64 rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	72.85
+niimath_x86-64 rest.nii.gz  -bptf 77 8.68 out	446.39
+niimath_x86-64 rest.nii.gz -s 2.548 out	85.37
+niimath_x86-64 t1.nii.gz  -kernel boxv 7 -dilM out	10.02
+niimath_x86-64_parallel rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	7.52
+niimath_x86-64_parallel rest.nii.gz  -bptf 77 8.68 out	83.68
+niimath_x86-64_parallel rest.nii.gz -s 2.548 out	9.1
+niimath_x86-64_parallel t1.nii.gz  -kernel boxv 7 -dilM out	6.29
+niimath rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	36.75
+niimath rest.nii.gz  -bptf 77 8.68 out	414.7
+niimath rest.nii.gz -s 2.548 out	65.46
+niimath t1.nii.gz  -kernel boxv 7 -dilM out	4.96
