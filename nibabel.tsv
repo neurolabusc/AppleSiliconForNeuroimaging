@@ -1,19 +1,19 @@
-i5-8259U
-function	time	
+i5-8259U	
+function	time
 time pytest -c ./pytest.benchmark.ini ./bench_array_to_file.py	19.3
 time pytest -c ./pytest.benchmark.ini ./bench_fileslice.py	25.180
 time pytest -c ./pytest.benchmark.ini ./bench_finite_range.py	1.806
 time pytest -c ./pytest.benchmark.ini ./bench_load_save.py	11.523
 time pytest -c ./pytest.benchmark.ini ./bench_streamlines.py	20.894
-3900X
-function	time	
+3900X	
+function	time
 time pytest -c ./pytest.benchmark.ini ./bench_array_to_file.py	7.602
 time pytest -c ./pytest.benchmark.ini ./bench_fileslice.py	13.484
 time pytest -c ./pytest.benchmark.ini ./bench_finite_range.py	1.073
 time pytest -c ./pytest.benchmark.ini ./bench_load_save.py	7.288
 time pytest -c ./pytest.benchmark.ini ./bench_streamlines.py	9.783
-M1
-function	time	
+M1	
+function	time
 time pytest -c ./pytest.benchmark.ini ./bench_array_to_file.py	7.27
 time pytest -c ./pytest.benchmark.ini ./bench_fileslice.py	16.14
 time pytest -c ./pytest.benchmark.ini ./bench_finite_range.py	1.31
