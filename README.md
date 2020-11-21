@@ -67,6 +67,14 @@ The graph shows the geometric mean for four computations (de-meaning, temporal f
  
 ![fslmaths](fslmaths.png)
 
+## NiBabel
+
+[NiBabel](https://nipy.org/nibabel/) is a collection of neuroimaging related Python scripts and utilities. It provides [benchmarks](https://nipy.org/nibabel/reference/nibabel.benchmarks.html) for performance and regression testing. While both Python 2.7 and 3 are provided with M1 computers, core Python libraries like numpy and scipy are not yet available as natively compiled code. For these tests, [miniconda](https://docs.conda.io/en/latest/miniconda.html) was installed, and the miniconda `pip` program was used to install x86-64 libraries (numpy, nibabel, pandas, seaborn). Rosetta2 seamlessly translated the x86-64 code the first time the libraries were launched. While native performance will surely be better, here we test the available translations.
+
+The graph shows the geometric mean for the benchmarks with lower values indicating faster performance.
+ 
+![nibabel](nibabel.png)
+
 ## SPM
 
 [SPM12](https://www.fil.ion.ucl.ac.uk/spm/software/spm12/) is one of the dominant tools used for brain imaging. It uses Matlab along with compiled C code (mex files), both of which must currently be translated. In addition, the macOS is wary of the downloaded mex files, which look like malware. Therefore, users must [explicitly provide permission for these to be executed](https://transang.me/macos-open-file-from-unidentified-developers/) with a command like `xattr -dr com.apple.quarantine *.mexmaci64`. To evaluate the performance of SPM, I installed the [Clinical Toolbox](https://github.com/neurolabusc/Clinical) and timed the processing of the included tutorial dataset (`tic; clinical_mrnorm('T1.nii','lesionT2.nii','T2.nii'); toc`). Lower values indicate faster performance.
@@ -83,7 +91,8 @@ The first test examines the CPU performance, looking at the loading, scaling and
 
 ![mricrogl](mricrogl.png)
 
-The second test examines the GPU compute performance, looking at generation of the intensity [gradients](https://www.mccauslandcenter.sc.edu/mricrogl/gradients).
+The second test examines the GPU compute performance, looking at generation of the intensity [gradients](https://www.mccauslandcenter.sc.edu/mricrogl/gradients). While many have been critical of Intel integrated graphics, the i5-8259u includes the [Iris Plus Graphics 655](https://en.wikipedia.org/wiki/Intel_Graphics_Technology) with 128 MB eDRAM and 48 execution units (whereas most contemporary Intel GPUs had no eDRAM and half the number of execution units). The 8700K and 3900X both use the powerful 250w NVidia GTX 1080 Ti. In this light, the combination of the Metal compute language and the M1 GPU provides compelling performance.
+
 
 ![mricrogl](mricrogl_gpu.png)
 
