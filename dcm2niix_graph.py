@@ -9,10 +9,10 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 #MacBook i5-8259U
-#Ubuntu i7-8700K
 #Ubuntu 3900X
-df = pd.DataFrame({'CPU': ['8259U','3900X','M1-x86'],
-					'Time': [26.5, 12.418, 14.08]})
+#MacBookAir M1
+df = pd.DataFrame({'CPU': ['8259U','3900X','M1-ARM'],
+					'Time': [9.824, 1.374, 3.011]})
 sns.set()
 ax = sns.catplot(x="CPU", y="Time", kind="bar", data=df)
-plt.savefig('nibabel.png', dpi=300)
+plt.savefig('dcm2niix.png', dpi=300)

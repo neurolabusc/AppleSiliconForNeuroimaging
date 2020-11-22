@@ -1,0 +1,25 @@
+i5-8259U	
+load	822
+init	223
+minmax	169
+rgba	400
+8700K	
+load	415
+init	140
+minmax	125
+rgba	184
+Ryzen		
+load	325
+init	229
+minmax	216
+rgba	128
+M1-FPC	
+load	471
+init	329
+minmax	319
+rgba	189
+M1-LLVM	
+load	459
+init	126
+minmax	81
+rgba	104

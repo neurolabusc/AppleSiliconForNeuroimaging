@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 #MacBook i5-8259U
 #Ubuntu i7-8700K
 #Ubuntu 3900X
-df = pd.DataFrame({'CPU': ['8259U','8700K','3900X','M1-ARM'],
-					'Time': [333.6420985, 191.1947629, 212.9833438, 310.8975668]})
+df = pd.DataFrame({'CPU': ['8259U','8700K','3900X','M1-FPC','M1-LLVM'],
+					'Time': [333.6420985, 191.1947629, 212.9833438, 310.8975668, 148.568]})
 
 
 sns.set()
