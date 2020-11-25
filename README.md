@@ -39,7 +39,7 @@ Four computers were tested:
  - MacBook Pro (2018) with Intel [i5-8259u](https://ark.intel.com/content/www/us/en/ark/products/135935/intel-core-i5-8259u-processor-6m-cache-up-to-3-80-ghz.html) (28w) four-core, eight-thread, integrated GPU.
  - Ubuntu 18.04 Intel [i7-8700k](https://ark.intel.com/content/www/us/en/ark/products/126684/intel-core-i7-8700k-processor-12m-cache-up-to-4-70-ghz.html) (95w) six-core, twelve-thread with NVidia GTX [1080 Ti](https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-1080-ti/specifications) (250w) GPU.
  - Ubuntu 20.04 AMD [Ryzen 9 3900X](https://www.amd.com/en/products/cpu/amd-ryzen-9-3900x) (105w) twelve-core, twenty-four-thread  with NVidia GTX [1080 Ti](https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-1080-ti/specifications) (250w) GPU. Tests were run on a RAM disk to maximize memory performance.
- - MacBook Air (2020) with Apple Silicon [M1](https://en.wikipedia.org/wiki/Apple_M1) (~15w) with four fast cores plus four efficiency cores and integrated GPU. Note this configuration does not have active cooling, so performance may be thermally constrained.
+ - MacBook Air (2020) with Apple Silicon [M1](https://en.wikipedia.org/wiki/Apple_M1) (~15w) with four fast cores plus four efficiency cores and integrated GPU (8 Gb RAM, 256 Gb SSD, 7 GPUs). Note this configuration does not have active cooling, so performance is thermally constrained (for example, the [Mac mini M1](https://appleinsider.com/articles/20/11/24/apple-silicon-m1-mac-mini-review---speed-today-and-a-promise-of-more-later) is faster for sustained workloads).
 
 ## AFNI
 
@@ -110,6 +110,14 @@ Tools like SPM use the value [`Not a Number`](https://en.wikipedia.org/wiki/NaN)
 ## Double-precision floating-point format
 
 While 32-bit (FP32) computations are sufficient for most needs, some scientific tools demand double-precision floating-point format ([FP64](https://en.wikipedia.org/wiki/Double-precision_floating-point_format)). Indeed, tools like Matlab use FP64 by default and are tuned for this datatype. FP64 has demands for speed, efficiency and bandwidth. It is common for consumer devices like video gaming graphics cards to devote fewer resources to [FP64](https://www.microway.com/knowledge-center-articles/comparison-of-nvidia-geforce-gpus-and-nvidia-tesla-gpus/) than graphics cards used for industrial compute applications. Given the M1's heritage as a processor for consumer mobile phones, one might wonder if the FP64 performance has been compromised. To investigate this,  [niimath](https://github.com/rordenlab/niimath) was run with both FP64 and FP32 datatypes. The penalty for FP64 seems minimal, emphasizing the potential for scientific applications.
+
+Floating-point performance was tested with a [simple C program](https://github.com/neurolabusc/simd) that compares classic scalar C code with code that explicitly uses vectorized SIMD (single instruction, multiple data). Note a smart compiler might be able to vectorize C code. In the graph below, the square-root is calculated independently for 808704000 voxels [emulating a resting state dataset](https://protocols.humanconnectome.org/HCP/3T/imaging-protocols.html). Conducting a single computation on a huge array is cache inefficient, but typical behavior for many neuroimaging tools. Therefore, on many platforms this test may be constrained by memory bandwidth rather than computational power.
+
+The x86-64 architecture provides 128-bit SSE instructions (which can handle x4 32-bit computations or x2 64-bit computations at once), 256-bit AVX (x8, x4), and (untested) 512-bit AVX-512 (x16, x8). Note that using these power-hungry instructions can lead to a [reduction](https://blog.cloudflare.com/on-the-dangers-of-intels-frequency-scaling/) in clock [frequency](https://lemire.me/blog/2018/09/04/per-core-frequency-scaling-and-avx-512-an-experiment/). The Apple M1 includes 128-bit Neon instructions, but not the upcomg Scalable Vector Extension (SVE) instructions.
+
+The graph shows milliseconds to compute square-root for 808704000 voxels. The i5-8259u appears constrained by the bandwidth of its lower power memory, as explicit vector instructions do not improve performance. The Ryzen 3900X has outstanding floating-point computational abilities, combined with high-performance (albeit power hungry) memory. The M1 shows no benefit fromexplicit use of Neon instructions, suggesting either the compiler implicitly uses them or this task is memory constrained. While the M1 is slower for double-precision (64-bit) versus single-precision (32-bit) computations, this is a stunning performance considering the 10w power envelope.
+
+![simd](simd.png)
 
 ## Conclusions
 
