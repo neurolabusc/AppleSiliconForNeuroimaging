@@ -4,7 +4,7 @@ Historically, Macintosh computers running macOS have been popular with brain ima
 
 ## TL;DR
 
-Unless you are a developer, I would strongly discourage scientists from purchasing an Apple Silicon computer in the short term. Productive work will require core tools to be ported. In the longer term, this architecture could have a profound impact on science. In particular if Apple develops servers that exploit the remarkable power efficiency of their CPUs and leverage the Metal language and GPUs for compute tasks (competing with NVidia's Tesla products and CUDA language).
+Unless you are a developer, I would strongly discourage scientists from purchasing an Apple Silicon computer in the short term. Productive work will require core tools to be ported. In the longer term, this architecture could have a profound impact on science. In particular if Apple develops servers that exploit the remarkable power efficiency of their CPUs (competing with AWS Graviton) and leverage the Metal language and GPUs for compute tasks (competing with NVidia's Tesla products and CUDA language).
 
 ## Limitations facing Apple Silicon
 
@@ -12,7 +12,7 @@ The infrastructure scientists depend on is not yet available for this architectu
 
  - Scientists using the popular [R](https://developer.r-project.org/Blog/public/2020/11/02/will-r-work-on-apple-silicon/index.html), [Julia](https://github.com/JuliaLang/julia/issues/36617) and Python languages require an open source [Fortran compiler](https://walkingrandomly.com/?p=6696). While Python is available on Apple Silicon, tools like Numpy and [Scipy](https://github.com/scipy/scipy/wiki/Dropping-support-for-Accelerate) require Fortran compilation. One solution is to install a Python distribution like [miniconda](https://docs.conda.io/en/latest/miniconda.html) and run its pip installer to add Intel packages (the scripts included in this repository include numpy, pandas, seaborn). There is a delay when one first imports one of these libraries while they are translated. Subsequently, the translated Python libraries appear to run well.
  - Current Apple Silicon compilers do [not support OpenMP](https://github.com/Homebrew/brew/issues/7857). Many scientific tools use this framework to implement parallel computing. This means most native tools will only be able to use a single CPU at a time (though note translated x86-64 OpenMP applications will run multi-threaded). While Apple's C Clang compiler generates fast native code, many scientific tools will need to [wait](https://www.theregister.com/2020/11/18/apple_silicon_m1_mac_compatibility/) until gcc, golang and gFortran compilers are available.
- - Tools like VirtualBox, VMware Fusion and Parallels do not yet support Apple Silicon. Many users rely on these tools for using Windows and Linux programs on their macOS computers.
+ - Tools like VirtualBox, VMware Fusion, Boot Camp and Parallels do not yet support Apple Silicon. Many users rely on these tools for using Windows and Linux programs on their macOS computers.
  - Docker does not [support Apple Silicon](https://www.docker.com/blog/apple-silicon-m1-chips-and-docker/). These containers are popular with many neuroimaging tools.
  - Many [homebrew components](https://github.com/Homebrew/brew/issues/7857) do not support Apple Silicon. Users will have to [install translated components](https://soffes.blog/homebrew-on-apple-silicon).
  - MATLAB is used by many scientific tools, including SPM. While [Matlab](https://www.mathworks.com/matlabcentral/answers/641925-is-matlab-supported-on-apple-silicon-macs) works in translation, it is not yet available natively (and mex files will need to be recompiled).
@@ -62,14 +62,14 @@ The graph below shows the geometric mean time for applying 3dcalc and 3dvolreg t
 
 fslmaths handles much of the internal processing for FSL, and is a popular stand-alone tool for computation. While [FSL](https://www.jiscmail.ac.uk/cgi-bin/wa-jisc.exe?A2=ind2011&L=FSL&O=D&X=E5496FE3694704BA21&Y=rorden%40sc.edu&P=163954) is not yet compiled for Apple Silicon, translations run seamlessly. On the other hand, the [niimath](https://github.com/rordenlab/niimath) clone can be compiled for Apple Silicon. Of specific interest, niimath for x86-64 can be compiled for OpenMP, providing a glimpse of parallel processing potential. Parallel processing is used for some computations and for saving data (using pigz). 
 
-The graph shows the geometric mean for four computations (de-meaning, temporal filtering, Gaussian smoothing, image dilation) with lower values indicating faster performance. `FSL` denotes the performance of fslmaths. `Serial` is the performance of niimath using a single thread. `Parallel` is niimath using OpenMP (which is not yet available for the M1).  Note that when run in parallel on the M1, niimath uses translated x86-64 code for computations but native CloudFlare pigz for data compression. What is truly remarkable here is that the 15w M1 running translated code in parallel is keeping pace with the 105w Ryzen 3900X.
+The graph shows the geometric mean for four computations (de-meaning, temporal filtering, Gaussian smoothing, image dilation) with lower values indicating faster performance. `FSL` denotes the performance of fslmaths. `Serial` is the performance of niimath using a single thread. `Parallel` is niimath using OpenMP (which is not yet available natively for the M1).  Note that when run in parallel on the M1, niimath uses translated x86-64 code for computations but native CloudFlare pigz for data compression. What is truly remarkable here is that the 15w M1 running translated code in parallel is keeping pace with the 105w Ryzen 3900X.
  
 ![fslmaths](fslmaths.png)
 
 
 ## MRIcroGL
 
-[MRIcroGL](https://github.com/rordenlab/MRIcroGL12/releases) is used for visualization of neuroimaging data. It is available for Linux, Windows and macOS. For macOS, a universal binary is provided that runs natively on both x86-64 and Apple Silicon. For Windows and Linux, OpenGL is used for visualization and some compute. For macOS versions are available for both OpenGL and Metal. The latter was used here (while deprecated on macOS, OpenGL performs well, albeit a bit slower). Testing involved a [digimorph desert iguana](http://digimorph.org/specimens/Dipsosaurus_dorsalis/) that used two 512mb textures of GPU memory. 
+[MRIcroGL](https://www.nitrc.org/plugins/mwiki/index.php/mricrogl:MainPage) is a used for visualization of neuroimaging data supporting [volume rendering](https://en.wikipedia.org/wiki/Volume_rendering). It is available for Linux, Windows and macOS. For macOS, a universal binary is provided that runs natively on both x86-64 and Apple Silicon. For Windows and Linux, OpenGL is used for visualization and some compute. For macOS versions are available for both OpenGL and Metal. The latter was used here (while deprecated on macOS, OpenGL performs well, albeit a bit slower). Testing involved a [digimorph desert iguana](http://digimorph.org/specimens/Dipsosaurus_dorsalis/) that used two 512mb textures of GPU memory. 
 
 ![mricrogl](iguana.jpg)
 
@@ -104,6 +104,16 @@ The graph shows compression performance as megabytes per second, with higher val
 
 ![spm](spm.png)
 
+## Surfice
+
+[Surfice](https://www.nitrc.org/plugins/mwiki/index.php/surfice:MainPage) is a used for visualization of neuroimaging data supporting [mesh rendering](https://en.wikipedia.org/wiki/Polygon_mesh). It is available for Linux, Windows and as a universal binary for MacOS (supporting both Intel and M1 CPUs). Unlike volume rendering, mesh rendering requires that the raw voxel data from MRI and CT scans is converted to a [mesh of triangles](http://paulbourke.net/geometry/polygonise/). Subsequently, we want to [adaptively simplify the mesh](http://www.alecjacobson.com/weblog/?p=4444), reducing the number of triangular faces while preserving curvature. For this task, Surfice provides a command for [fast quadric mesh simplification](https://github.com/sp4cerat/Fast-Quadric-Mesh-Simplification). To examine performance of different CPUs, we will apply a 95% reduction to a brain mesh. The figure below shows the original mesh (left column, 1486759 triangles) and the simplified mesh (right column, 74326 triangles). The upper row shows the rendered meshes - note how similar the meshes look. The low row shows the triangles, illustrating the dramatic reduction in triangles. 
+
+![mesh reduction](surfice.jpg)
+
+In this implementation, mesh simplification is a single-threaded test of CPU performance. The M1 dominates this test.
+
+![surfice](surfice.png)
+
 ## NaNs
 
 Tools like SPM use the value [`Not a Number`](https://en.wikipedia.org/wiki/NaN) to signify data that should be ignored (e.g. voxels outside the brain). Any computation (addition, subtraction, division, multiplication, etc) that includes a NaN will result in a NaN. Old timers will remember the launch of the [Pentium 4](https://imaging.mrc-cbu.cam.ac.uk/imaging/SpmWithPentium4#c_nan_test) which had remarkable performance on paper, but exhibited poor performance with SPM. This was because the Pentium 4 floating point unit (FPU) had a huge penalty for any computation with a NaN. Users had to recompile their software to use the vectorized SSE instructions which did not exhibit this penalty. Testing of the [C and Matlab](https://imaging.mrc-cbu.cam.ac.uk/imaging/SpmWithPentium4#c_nan_test) code suggests that the M1 does not exhibit a NaN penalty, and indeed can be faster for NaNs (since no real computation needs to be done).
@@ -116,7 +126,7 @@ Floating-point performance was tested with a [simple C program](https://github.c
 
 The x86-64 architecture provides 128-bit SSE instructions (which can handle x4 32-bit computations or x2 64-bit computations at once), 256-bit AVX (x8, x4), and (untested) 512-bit AVX-512 (x16, x8). Note that using these power-hungry instructions can lead to a [reduction](https://blog.cloudflare.com/on-the-dangers-of-intels-frequency-scaling/) in clock [frequency](https://lemire.me/blog/2018/09/04/per-core-frequency-scaling-and-avx-512-an-experiment/). The Apple M1 includes 128-bit Neon instructions, but not the upcomg Scalable Vector Extension (SVE) instructions.
 
-The graph shows milliseconds to compute square-root for 808704000 voxels, with lower values indicating faster performance. The i5-8259u appears constrained by the bandwidth of its lower power memory, as explicit vector instructions do not improve performance. The Ryzen 3900X has outstanding floating-point computational abilities, combined with high-performance (albeit power hungry) memory. The M1 shows no benefit from explicit use of Neon instructions, suggesting either the compiler implicitly uses them or this task is memory constrained. While the M1 is slower for double-precision (64-bit) versus single-precision (32-bit) computations, this is a stunning performance considering the 10w power envelope.
+The graph shows milliseconds to compute square-root for 808704000 voxels, with lower values indicating faster performance. The blue, orange and green bars are peroformance for FP32 computations (scalar, 128-bit and 256-bit SIMD respectively), and the red, purple and brwon show FP64. The i5-8259u appears constrained by the bandwidth of its lower power memory, as explicit vector instructions do not improve performance (the increasing time for the first three bars may reflect thermal throttling, as these were run sequentially). Obviously, all systems show a penalty for 64-bit versus 32-bit precision. The Ryzen 3900X has outstanding floating-point abilities, combined with high-performance (albeit power hungry) memory. The M1 shows no benefit from explicit use of Neon instructions, suggesting either the compiler implicitly uses them or this task is memory constrained. While the M1 is slower for double-precision (64-bit) versus single-precision (32-bit) computations, this is a stunning performance considering the 10w power envelope.
 
 ![simd](simd.png)
 
