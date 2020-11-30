@@ -14,7 +14,7 @@ The infrastructure scientists depend on is not yet available for this architectu
  - Current Apple Silicon compilers do [not support OpenMP](https://github.com/Homebrew/brew/issues/7857). Many scientific tools use this framework to implement parallel computing. This means most native tools will only be able to use a single CPU at a time (though note translated x86-64 OpenMP applications will run multi-threaded). While Apple's C Clang compiler generates fast native code, many scientific tools will need to [wait](https://www.theregister.com/2020/11/18/apple_silicon_m1_mac_compatibility/) until gcc, golang and gFortran compilers are available.
  - Tools like VirtualBox, VMware Fusion, Boot Camp and Parallels do not yet support Apple Silicon. Many users rely on these tools for using Windows and Linux programs on their macOS computers.
  - Docker does not [support Apple Silicon](https://www.docker.com/blog/apple-silicon-m1-chips-and-docker/). These containers are popular with many neuroimaging tools.
- - Many [homebrew components](https://github.com/Homebrew/brew/issues/7857) do not support Apple Silicon. Users will have to [install translated components](https://soffes.blog/homebrew-on-apple-silicon).
+ - Many [homebrew components](https://github.com/Homebrew/brew/issues/7857) do not support Apple Silicon. Users will have to [install translated components](https://soffes.blog/homebrew-on-apple-silicon) or [build supported modules from source](https://github.com/mikelxc/Workarounds-for-ARM-mac).
  - MATLAB is used by many scientific tools, including SPM. While [Matlab](https://www.mathworks.com/matlabcentral/answers/641925-is-matlab-supported-on-apple-silicon-macs) works in translation, it is not yet available natively (and mex files will need to be recompiled).
  - [FSL](https://www.jiscmail.ac.uk/cgi-bin/wa-jisc.exe?A2=ind2011&L=FSL&O=D&X=E5496FE3694704BA21&Y=rorden%40sc.edu&P=163954) and AFNI do not yet natively support this architecture. While code may work in translation, native tools supporting features like OpenMP must wait for compilers and libraries to be updated. This will likely require months.
  
@@ -44,11 +44,11 @@ Four computers were tested:
 
 ## AFNI
 
-[AFNI](https://afni.nimh.nih.gov) is a popular software suite for brain imaging. It is a collection of executables written in C. Some AFNI tools use OpenMP for parallel processing. Native code for Apple Silicon will be limited by the fact that OpenMP C compilers are not expected until the middle of 2021. Further, it relies on libraries like [motif](https://sourceforge.net/projects/motif/) that are not yet available pre-compiled for Apple Silicon.
+[AFNI](https://afni.nimh.nih.gov) is a popular software suite for brain imaging. It is a collection of executables written in C. Some AFNI tools use OpenMP for parallel processing. Native code for Apple Silicon will be limited by the fact that OpenMP C compilers are not expected until the middle of 2021. Further, it relies on libraries like [motif](https://sourceforge.net/projects/motif/) that are not yet available pre-compiled for Apple Silicon. 
 
-However, Rosetta2 seamlessly translates Intel binaries and libraries. Here I simply copied the executables and libraries from an Intel-based macOS computer and authorized them (e.g. `xattr -dr com.apple.quarantine 3d*`).
+However, Rosetta2 seamlessly translates Intel binaries and libraries. Here I simply copied the executables and libraries from an Intel-based macOS computer and authorized them (e.g. `xattr -dr com.apple.quarantine 3d*`). I also natively compiled motif and a few of the AFNI programs.
 
-The graph below shows the geometric mean time for applying 3dcalc and 3dvolreg to a large resting state dataset. Lower values indicate better performance. Note that the fanless M1 running translated code actually outpaces the desktop computer.
+The graph below shows the geometric mean time for applying 3dcalc and 3dvolreg to a large resting state dataset. Lower values indicate better performance. Note that the fanless M1 running actually outpaces the desktop computer.
 
 ![afni](afni.png)
 

@@ -1,12 +1,15 @@
 i5-8259U	
 function	time
-3dcalc  -a rest.nii.gz -b a+l -c a-l -expr 'median(a,b,c)' -prefix temp	48.0
-3dvolreg rest.nii.gz	297.278
+3dcalc  -a rest.nii.gz -b a+l -c a-l -expr 'median(a,b,c)' -prefix temp	56
+3dvolreg rest.nii.gz	293
 3900X	
 function	time
-3dcalc  -a rest.nii.gz -b a+l -c a-l -expr 'median(a,b,c)' -prefix temp	33.577
-3dvolreg rest.nii.gz	194.99
-M1	
+3dcalc  -a rest.nii.gz -b a+l -c a-l -expr 'median(a,b,c)' -prefix temp	36
+3dvolreg rest.nii.gz	208
+M1-x86	
 function	time
-3dcalc  -a rest.nii.gz -b a+l -c a-l -expr 'median(a,b,c)' -prefix temp	28.75
-3dvolreg rest.nii.gz	194.99
+3dcalc  -a rest.nii.gz -b a+l -c a-l -expr 'median(a,b,c)' -prefix temp	38
+3dvolreg rest.nii.gz	261
+M1-ARM
+3dcalc  -a rest.nii.gz -b a+l -c a-l -expr 'median(a,b,c)' -prefix temp	20
+3dvolreg rest.nii.gz	146
