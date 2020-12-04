@@ -58,3 +58,14 @@ niimath rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	36.75
 niimath rest.nii.gz  -bptf 77 8.68 out	414.7
 niimath rest.nii.gz -s 2.548 out	65.46
 niimath t1.nii.gz  -kernel boxv 7 -dilM out	4.96
+
+niimath_parallel rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	12.23
+niimath_parallel rest.nii.gz  -bptf 77 8.68 out	76.54
+niimath_parallel rest.nii.gz -s 2.548 out	15.76
+niimath t1.nii.gz  -kernel boxv 7 -dilM out	4.38
+
+export AFNI_COMPRESSOR=PIGZ
+time ./niimath_parallel rest.nii.gz  -Tmean -mul -1 -add rest.nii.gz out	12.2
+time ./niimath_parallel rest.nii.gz  -bptf 77 8.68 out	80.84
+time ./niimath_parallel rest.nii.gz -s 2.548 out	15.9
+time ./niimath_parallel t1.nii.gz  -kernel boxv 7 -dilM out
