@@ -17,6 +17,8 @@ The infrastructure scientists depend on is not yet available for this architectu
  - Many [homebrew components](https://github.com/Homebrew/brew/issues/7857) do not support Apple Silicon. Users will have to [install translated components](https://soffes.blog/homebrew-on-apple-silicon) or [build supported modules from source](https://github.com/mikelxc/Workarounds-for-ARM-mac).
  - MATLAB is used by many scientific tools, including SPM. While [Matlab](https://www.mathworks.com/matlabcentral/answers/641925-is-matlab-supported-on-apple-silicon-macs) works in translation, it is not yet available natively (and mex files will need to be recompiled).
  - [FSL](https://www.jiscmail.ac.uk/cgi-bin/wa-jisc.exe?A2=ind2011&L=FSL&O=D&X=E5496FE3694704BA21&Y=rorden%40sc.edu&P=163954) and AFNI do not yet natively support this architecture. While code may work in translation, creating some native tools must wait for compilers and libraries to be updated. This will likely require months.
+ - The current generation M1 only has four high performance cores. Most neuroimaging pipelines combine sequential tasks that only require a single core (where the M1 excels) as well as parallel tasks. Those parallel tasks could exploit a CPU with more cores (as shown in the pigz and niimath tests below). Bear in mind that this mixture of serial and parallel code faces [Amdahls law](https://en.wikipedia.org/wiki/Amdahl%27s_law), with [diminishing returns](https://neurostars.org/t/fmriprep-multi-threading-benchmark-results/17622/2) for extra cores.
+ - The current generation M1 has a maximum of 16 Gb of RAM. Neuroimaging datasets often have [large memory demands](https://neurostars.org/t/fmriprep-multi-threading-benchmark-results/17622) (especially multi-band accelerated functional, resting-state and diffusion datasets). 
  
 There are some inherent weaknesses to using Macintosh for brain imaging:
 
@@ -57,6 +59,10 @@ The graph below shows the geometric mean time for applying 3dcalc and 3dvolreg t
 [dcm2niix](https://github.com/rordenlab/dcm2niix) is used to convert the complicated DICOM format used in medical imaging to the simple NIfTI format popular in scientific neuroimaging. While the DICOM format allows several forms of image compression, images are typically stored uncompressed. Image conversion typically only requires a small amount of time relative to the subsequent processing and statistics. However, since dcm2niix can be easily compiled for the M1, it is an easy tool to benchmark. Here we convert [1296 DICOM uncompressed images (1.6 Gb)](https://osf.io/3m7ph/) to uncompressed NIfTI (dcm2niix can use pigz for compression, which we evaluate separately). The graph below shows conversion times, with lower values indicating faster performance. 
 
 ![dcm2niix](dcm2niix.png)
+
+## Fortran
+
+As previously noted, many scientific tools require a Fortran compiler. An experimental build of the open source gFortran compiler has just been released. The preliminary performance for this [nascent gFortran tool is described on a separate page](./fortran/README.md).  
 
 ## FSL
 
