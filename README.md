@@ -39,10 +39,10 @@ Initial reviews have suggested [Apple's M1 CPU has outstanding performance](http
 
 Four computers were tested:
 
- - MacBook Pro (2018) with Intel [i5-8259u](https://ark.intel.com/content/www/us/en/ark/products/135935/intel-core-i5-8259u-processor-6m-cache-up-to-3-80-ghz.html) (28w) four-core, eight-thread, integrated GPU.
- - Ubuntu 18.04 Intel [i7-8700k](https://ark.intel.com/content/www/us/en/ark/products/126684/intel-core-i7-8700k-processor-12m-cache-up-to-4-70-ghz.html) (95w) six-core, twelve-thread with NVidia GTX [1080 Ti](https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-1080-ti/specifications) (250w) GPU.
- - Ubuntu 20.04 AMD [Ryzen 9 3900X](https://www.amd.com/en/products/cpu/amd-ryzen-9-3900x) (105w) twelve-core, twenty-four-thread  with NVidia GTX [1080 Ti](https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-1080-ti/specifications) (250w) GPU. Tests were run on a RAM disk to maximize memory performance.
- - MacBook Air (2020) with Apple Silicon [M1](https://en.wikipedia.org/wiki/Apple_M1) (~15w) with four fast cores plus four efficiency cores and integrated GPU (8 Gb RAM, 256 Gb SSD, 7 GPUs). Note this configuration does not have active cooling, so performance is thermally constrained (for example, the [Mac mini M1](https://appleinsider.com/articles/20/11/24/apple-silicon-m1-mac-mini-review---speed-today-and-a-promise-of-more-later) is faster for sustained workloads).
+ - MacBook Pro (2018) with Intel [i5-8259u](https://ark.intel.com/content/www/us/en/ark/products/135935/intel-core-i5-8259u-processor-6m-cache-up-to-3-80-ghz.html) (28w) four-core, eight-thread, maximum bandwidth 37.5 GB/s, integrated GPU.
+ - Ubuntu 18.04 Intel [i7-8700k](https://ark.intel.com/content/www/us/en/ark/products/126684/intel-core-i7-8700k-processor-12m-cache-up-to-4-70-ghz.html) (95w) six-core, twelve-thread, maximum bandwidth 41.6 GB/s, with NVidia GTX [1080 Ti](https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-1080-ti/specifications) (250w) GPU.
+ - Ubuntu 20.04 AMD [Ryzen 9 3900X](https://www.amd.com/en/products/cpu/amd-ryzen-9-3900x) (105w) twelve-core, twenty-four-thread, maximum bandwidth 47.68 GB/s,  with NVidia GTX [1080 Ti](https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-1080-ti/specifications) (250w) GPU. Tests were run on a RAM disk to maximize memory performance.
+ - MacBook Air (2020) with Apple Silicon [M1](https://en.wikipedia.org/wiki/Apple_M1) (~15w) with four fast cores plus four efficiency cores, maximum bandwidth 68.25GB/s, and integrated GPU (8 Gb RAM, 256 Gb SSD, 7 GPUs). Note this configuration does not have active cooling, so performance is thermally constrained (for example, the [Mac mini M1](https://appleinsider.com/articles/20/11/24/apple-silicon-m1-mac-mini-review---speed-today-and-a-promise-of-more-later) is faster for sustained workloads).
 
 ## AFNI
 
@@ -92,7 +92,9 @@ The second test examines the GPU compute performance, looking at generation of t
 
 [NiBabel](https://nipy.org/nibabel/) is a collection of neuroimaging related Python scripts and utilities. It provides [benchmarks](https://nipy.org/nibabel/reference/nibabel.benchmarks.html) for performance and regression testing. While both Python 2.7 and 3 are provided with M1 computers, core Python libraries like numpy and scipy are not yet available as natively compiled code. For these tests, [miniconda](https://docs.conda.io/en/latest/miniconda.html) was installed, and the miniconda `pip` program was used to install x86-64 libraries (numpy, nibabel, pandas, seaborn). Rosetta2 seamlessly translated the x86-64 code the first time the libraries were launched. While native performance will surely be better, here we test the available translations.
 
-The graph shows the geometric mean for the benchmarks with lower values indicating faster performance.
+An experimental [Python version 3.9.1rc1 that natively supports the M1](https://github.com/conda-forge/miniforge#download) including native numpy (`conda install numpy`) has been released. Note that many Python libraries do not yet support this hardware, so in practice you will have to disable this version for many tasks (`conda deactivate`). This native library performed faster than the translated library in all but one test (the finite_range test is reliably slower).
+
+The graph shows the geometric mean for the benchmarks with lower values indicating faster performance. 
  
 ![nibabel](nibabel.png)
 

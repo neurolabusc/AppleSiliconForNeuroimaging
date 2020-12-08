@@ -14,7 +14,7 @@ time pytest -c ./pytest.benchmark.ini ./bench_fileslice.py	13.484
 time pytest -c ./pytest.benchmark.ini ./bench_finite_range.py	1.073
 time pytest -c ./pytest.benchmark.ini ./bench_load_save.py	7.288
 time pytest -c ./pytest.benchmark.ini ./bench_streamlines.py	9.783
-M1	
+M1-x86	
 function	time
 time pytest -c ./pytest.benchmark.ini ./bench_array_to_file.py	7.27
 time pytest -c ./pytest.benchmark.ini ./bench_arrayproxy_slicing.py	585.1
@@ -22,3 +22,11 @@ time pytest -c ./pytest.benchmark.ini ./bench_fileslice.py	16.14
 time pytest -c ./pytest.benchmark.ini ./bench_finite_range.py	1.31
 time pytest -c ./pytest.benchmark.ini ./bench_load_save.py	5.63
 time pytest -c ./pytest.benchmark.ini ./bench_streamlines.py	15.38
+M1-ARM	
+function	time
+time pytest -c ./pytest.benchmark.ini ./bench_array_to_file.py	7.16
+time pytest -c ./pytest.benchmark.ini ./bench_arrayproxy_slicing.py	460.52
+time pytest -c ./pytest.benchmark.ini ./bench_fileslice.py	13.821
+time pytest -c ./pytest.benchmark.ini ./bench_finite_range.py	2.194
+time pytest -c ./pytest.benchmark.ini ./bench_load_save.py	5.295
+time pytest -c ./pytest.benchmark.ini ./bench_streamlines.py	8.843

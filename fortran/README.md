@@ -4,7 +4,7 @@ Fortran plays a pivotal role in science. Open source [scientific tools](https://
 
 Unfortunately, the open source Fortran compilers do not yet support the ARM-based architecture used by Apple's M1 CPUs. Fortunately, Iain Sandoe has been working on porting both gcc and gFortran to this architecture. François-Xavier Coudert has created [an experimental release for the M1](https://github.com/fxcoudert/gfortran-for-macOS/releases). Here we assess the performance of this nascent tool.
 
-Here we test a [couple of popular benchmarks](https://benchmarksgame-team.pages.debian.net/benchmarksgame/fastest/fortran.html). These old benchmarks execute very rapidly, and are probably not a good measure of compute performance. I also include [a simple benchmark I wrote (f400) simulating neuroimaging data](https://github.com/fxcoudert/gfortran-for-macOS/issues/13) (which is probably limited more by memory bandwidth than computation). Due to these factors, I would take these results with a grain of salt. However, the fact that each of these runs to completion suggests that scientific tools which rely on Fortran may soon be available on this promising architecture.
+Here we test a [couple of popular benchmarks](https://benchmarksgame-team.pages.debian.net/benchmarksgame/fastest/fortran.html). These old benchmarks execute very rapidly, and are probably not a good measure of compute performance. I also include [a simple benchmark I wrote (f400) simulating neuroimaging data](https://github.com/fxcoudert/gfortran-for-macOS/issues/13) (which is probably limited more by memory bandwidth than computation). Finally, I include a [2D filtering](https://github.com/sebastianbeyer/fasticonv) benchmark. For this benchmark, I take report the total runtime, which means the results are dominated by the slow `naive` versus the `fast` implementation. It is worth noting that the `naive` implementation performed pporly on the M1 relative to the Intel and AMD CPUs, but the reverse was true for the `fast` method. Therefore, the total time reported suggests the M1 does poorly in this test, but the reverse would be true if the geometric means of the sub-tests was used. Due to these factors, I would take these results with a grain of salt. However, the fact that each of these runs to completion suggests that scientific tools which rely on Fortran may soon be available on this promising architecture.
 
 
 ## Installing dependencies
@@ -46,8 +46,11 @@ gfortran -O3 -fopenmp -o fspectral-norm spectral-norm.f90; time ./fspectral-norm
 gfortran -O3 -o fpidigits pidigits.f90 -lgmp; time ./fpidigits 10000
 gfortran -O3 -o freverse reverse.f90; time ./freverse 0 < revcomp-input100000000.txt
 gfortran -O3 -fopenmp -o fspectral-norm spectral-norm.f90; time ./fspectral-norm 5500
-gfortran -O3 -o f400 fortran400.f95; ./f400
-gfortran -O3 -o f400 fortran400.f95; ./f400
+gfortran -O3 -o f400 fortran400.f95; time ./f400
+gfortran -O3 -o f400 fortran400.f95; time ./f400
+gfortran -O3 -c -o fortfilt.o fortfilt.f90
+gfortran -O3 -o performancetest fortfilt.o performancetest.f90
+time ./benchmark.sh
 ```
 
 ## Testing
@@ -66,3 +69,4 @@ All of these times are very brief. Since macOS applications often [phone home](h
 | spectral-norm |  0.638        |  0.165        |  0.454        |
 | f400_fp32     |296.547        | 97.050        | 42.773        |
 | f400_fp64     |334.015        |276.307        | 85.466        |
+| [fasticonv](https://github.com/sebastianbeyer/fasticonv)     |26.746        | 27.429        | 60.570        |
