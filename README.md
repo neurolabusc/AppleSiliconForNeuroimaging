@@ -150,6 +150,24 @@ The graph shows milliseconds to compute square-root for 808704000 voxels, with l
 
 It is remarkable that the M1 CPU in the MacBook Air has no fan, yet holds its own in these neuroimaging benchmarks. The promise of this architecture is hard to deny.
 
+## Software Evaluated
+
+Here is the status of a few tools I have evaluated. This selection is necessarily biased by my own tasks.
+
+ - Native support
+  - [dcm2niix](https://github.com/rordenlab/dcm2niix)
+  - [MRIcroGL](https://github.com/rordenlab/MRIcroGL12/releases)
+  - [MRIcron](https://github.com/neurolabusc/MRIcron/releases)
+  - [Surfice](https://github.com/neurolabusc/surf-ice/releases)
+ - Translated Applications Appear to Function
+  - [AFNI](https://afni.nimh.nih.gov) (experimental native compile for [all tools except SUMA](https://github.com/neurolabusc/afni)) 
+  - [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/)
+  - [Slicer](https://www.slicer.org)
+  - [SPM12](https://www.fil.ion.ucl.ac.uk/spm/software/spm12/)
+ - Unsupported
+  - [Paraview](https://www.paraview.org) (solution: use version [prior to 5.6.1](https://discourse.paraview.org/t/paraview-on-new-macs-with-m1-chips/5909/9))
+ 
+
 ## Links
 
  - [AnandTech](https://www.anandtech.com/show/16252/mac-mini-apple-m1-tested) provides a deep dive into the workings of the new M1 chip and its performance.
