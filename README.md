@@ -155,17 +155,17 @@ It is remarkable that the M1 CPU in the MacBook Air has no fan, yet holds its ow
 Here is the status of a few tools I have evaluated. This selection is necessarily biased by my own tasks.
 
  - Native support
-  - [dcm2niix](https://github.com/rordenlab/dcm2niix)
-  - [MRIcroGL](https://github.com/rordenlab/MRIcroGL12/releases)
-  - [MRIcron](https://github.com/neurolabusc/MRIcron/releases)
-  - [Surfice](https://github.com/neurolabusc/surf-ice/releases)
+   - [dcm2niix](https://github.com/rordenlab/dcm2niix)
+   - [MRIcroGL](https://github.com/rordenlab/MRIcroGL12/releases)
+   - [MRIcron](https://github.com/neurolabusc/MRIcron/releases)
+   - [Surfice](https://github.com/neurolabusc/surf-ice/releases)
  - Translated Applications Appear to Function
-  - [AFNI](https://afni.nimh.nih.gov) (experimental native compile for [all tools except SUMA](https://github.com/neurolabusc/afni)) 
-  - [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/)
-  - [Slicer](https://www.slicer.org)
-  - [SPM12](https://www.fil.ion.ucl.ac.uk/spm/software/spm12/)
+   - [AFNI](https://afni.nimh.nih.gov) (experimental native compile for [all tools except SUMA](https://github.com/neurolabusc/afni)) 
+   - [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/)
+   - [Slicer](https://www.slicer.org)
+   - [SPM12](https://www.fil.ion.ucl.ac.uk/spm/software/spm12/)
  - Unsupported
-  - [Paraview](https://www.paraview.org) (solution: use version [prior to 5.6.1](https://discourse.paraview.org/t/paraview-on-new-macs-with-m1-chips/5909/9))
+   - [Paraview](https://www.paraview.org) (solution: use version [prior to 5.6.1](https://discourse.paraview.org/t/paraview-on-new-macs-with-m1-chips/5909/9))
  
 
 ## Links
