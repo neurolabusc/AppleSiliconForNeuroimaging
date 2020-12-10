@@ -114,6 +114,10 @@ The graph shows compression performance as megabytes per second, with higher val
 
 ![pigz](pigz.png)
 
+## R
+
+Users have been able to natively compile R and [report good performance on benchmarks as well as noting that the translated R has some problems with the interpreter interpreter](https://forums.macrumors.com/threads/data-science-r-and-spss-26-etc-under-rosetta-2-apple-silicon-m1.2269302/?post=29326680#post-29326680). Presumably, this user compiled R with the [experimental gFortran](https://github.com/fxcoudert/gfortran-for-macOS/releases). This suggests R may soon provide robust support for this architecture. In the short term, R users should be aware of [R's expectations for NaN values](https://developer.r-project.org/Blog/public/2020/11/02/will-r-work-on-apple-silicon/). Until this situation is resolved, users should be wary of using R on this architecture.
+
 ## SPM
 
 [SPM12](https://www.fil.ion.ucl.ac.uk/spm/software/spm12/) is one of the dominant tools used for brain imaging. It uses Matlab along with compiled C code (mex files), both of which must currently be translated. In addition, the macOS is wary of the downloaded mex files, which look like malware. Therefore, users must [explicitly provide permission for these to be executed](https://transang.me/macos-open-file-from-unidentified-developers/) with a command like `xattr -dr com.apple.quarantine *.mexmaci64`. To evaluate the performance of SPM, I installed the [Clinical Toolbox](https://github.com/neurolabusc/Clinical) and timed the processing of the included tutorial dataset (`tic; clinical_mrnorm('T1.nii','lesionT2.nii','T2.nii'); toc`). Lower values indicate faster performance.
