@@ -32,7 +32,7 @@ There are some inherent weaknesses to using Macintosh for brain imaging:
 
 Initial reviews have suggested [Apple's M1 CPU has outstanding performance](https://www.anandtech.com/show/16252/mac-mini-apple-m1-tested). It includes [Rosetta2](https://www.anandtech.com/show/16252/mac-mini-apple-m1-tested/6), that will translate most x86-64 programs to Apple Silicon (AArch64) instructions providing seamless operation and reasonable performance. Indeed, as illustrated below the compatibility and performance of Rosetta2 is very impressive. There are specific features that are appealing for neuroimaging.
 
- - Of particular note for brain scientists is the incredible memory bandwidth. Our field has large datasets that tend to be memory rather than computation bound (the [memory wall](https://www.blosc.org/docs/StarvingCPUs-CISE-2010.pdf)).
+ - Of particular note for brain scientists is the incredible memory bandwidth and the ability of [single cores](https://www.anandtech.com/show/16252/mac-mini-apple-m1-tested) to efficiently leverage this resource. Our field has large datasets that tend to be memory rather than computation bound (the [memory wall](https://www.blosc.org/docs/StarvingCPUs-CISE-2010.pdf)).
  - While some operations lend themselves to the CPU, others are ideal for the GPU. An analogy would be transport via jet plane (CPU: moving a small amount fast), or super tanker (GPU: moving a huge amount with longer latency). However, many operations require sharing data between the [CPU and GPU](https://www.blosc.org/docs/StarvingCPUs-CISE-2010.pdf) so  [memory transfer](https://www.jiscmail.ac.uk/cgi-bin/wa-jisc.exe?A2=ind2004&L=FSL&P=R99017&X=F11DC25F019ED07848&Y=rorden%40sc.edu) can be the bottleneck. In contrast, the Apple M1 chip has unified memory, allowing the GPU and CPU to share memory without penalty.
 
 ## Testing
@@ -53,6 +53,10 @@ However, Rosetta2 seamlessly translates Intel binaries and libraries. Here I sim
 The graph below shows the geometric mean time for applying 3dcalc and 3dvolreg to a large resting state dataset. Lower values indicate better performance. Note that the fanless M1 running actually outpaces the desktop computer.
 
 ![afni](afni.png)
+
+AFNI provides a [`Bigger Speed Test`](https://sscc.nimh.nih.gov/afni/doc/misc/afni_speed/index_html) which a [1.67 GHz G4 PowerBook (released in 2005)](https://everymac.com/systems/apple/powerbook_g4/specs/powerbook_g4_1.67_15.html) laptop was able to complete in 3081 seconds. In contrast, the M1 completes this in 47 seconds. In the graph below, the computation time is presented on the vertical axis (with less time indicating faster performance) and the number of threads shown on the horizontal axis. In this test, the M1 shows very similar performance for using just the four performance cores versus also using the efficiency cores. All systems show diminishing returns for additional cores, presumably reflecting both Amdahl's law and that the memory bandwidth is being saturated. Despite this effect, the sheer number of cores in the 3900X yields the best performance. 
+
+![afni_bench](afni_bench.png)
 
 ## dcm2niix
 
@@ -92,7 +96,7 @@ The second test examines the GPU compute performance, looking at generation of t
 
 [NiBabel](https://nipy.org/nibabel/) is a collection of neuroimaging related Python scripts and utilities. It provides [benchmarks](https://nipy.org/nibabel/reference/nibabel.benchmarks.html) for performance and regression testing. While both Python 2.7 and 3 are provided with M1 computers, core Python libraries like numpy and scipy are not yet available as natively compiled code. For these tests, [miniconda](https://docs.conda.io/en/latest/miniconda.html) was installed, and the miniconda `pip` program was used to install x86-64 libraries (numpy, nibabel, pandas, seaborn). Rosetta2 seamlessly translated the x86-64 code the first time the libraries were launched. While native performance will surely be better, here we test the available translations.
 
-An experimental [Python version 3.9.1rc1 that natively supports the M1](https://github.com/conda-forge/miniforge#download) including native numpy (`conda install numpy`) has been released. Note that many Python libraries do not yet support this hardware, so in practice you will have to disable this version for many tasks (`conda deactivate`). This native library performed faster than the translated library in all but one test (the finite_range test is reliably slower).
+An experimental [Python version 3.9.1rc1 that natively supports the M1](https://github.com/conda-forge/miniforge#download) including native numpy (`conda install numpy`) has been released. Note that many Python libraries do not yet support this hardware, so in practice you will have to disable this version for many tasks (`conda deactivate`). This native library performed faster than the translated library in all but one test (the finite_range test is [reliably slower](https://github.com/numpy/numpy/issues/17989)). While most native numpy tests complete, there [are still issues](https://github.com/numpy/numpy/issues/17964) as well as opportunity for architecture-specific optimizations.
 
 The graph shows the geometric mean for the benchmarks with lower values indicating faster performance. 
  
@@ -100,7 +104,7 @@ The graph shows the geometric mean for the benchmarks with lower values indicati
 
 ## OpenMP
 
-Many compuational tasks can be run in parallel, leveraging the fact that modern CPUs and GPUs have many independent cores. [OpenMP](https://openmp.llvm.org) is a poupular library for enabling parallel computation (e.g. afni, freesurfer, FSL and niimath). Here we test a [simple benchmark](OPENMP.md) that simulates computing a 1D Gaussian blur for a large 4D resting-state dataset. While Apple does not provide OpenMP with its compilers, it is simple to add this library ([as described here](OPENMP.md)). For the Intel and AMD CPUs, both the gcc and Clang/LLVM compilers were tested. They performed similarly, so Clang times are provided for all computers.
+Many computational tasks can be run in parallel, leveraging the fact that modern CPUs and GPUs have many independent cores. [OpenMP](https://openmp.llvm.org) is a poupular library for enabling parallel computation (e.g. afni, freesurfer, FSL and niimath). Here we test a [simple benchmark](OPENMP.md) that simulates computing a 1D Gaussian blur for a large 4D resting-state dataset. While Apple does not provide OpenMP with its compilers, it is simple to add this library ([as described here](OPENMP.md)). For the Intel and AMD CPUs, both the gcc and Clang/LLVM compilers were tested. They performed similarly, so Clang times are provided for all computers.
 
 The graph shows the geometric mean for the benchmarks with lower values indicating faster performance. Serial shows the performance for a single core, while parallel uses all available threads (24 for the 3900X and 8 for the 8259U and M1). One can also explicitly specify the number of threads. This reveals that SMT (for the 8259U and 3900X) and the efficiency cores (for the M1) provide little benefit (not shown). The main message here is that the M1 performance cores show good parallel scaling.
  
@@ -116,7 +120,7 @@ The graph shows compression performance as megabytes per second, with higher val
 
 ## R
 
-Users have been able to natively compile R and [report good performance on benchmarks as well as noting that the translated R has some problems with the interpreter interpreter](https://forums.macrumors.com/threads/data-science-r-and-spss-26-etc-under-rosetta-2-apple-silicon-m1.2269302/?post=29326680#post-29326680). Presumably, this user compiled R with the [experimental gFortran](https://github.com/fxcoudert/gfortran-for-macOS/releases). This suggests R may soon provide robust support for this architecture. In the short term, R users should be aware of [R's expectations for NaN values](https://developer.r-project.org/Blog/public/2020/11/02/will-r-work-on-apple-silicon/). Until this situation is resolved, users should be wary of using R on this architecture.
+Users have been able to natively compile R and [report good performance on benchmarks as well as noting that the translated R has some problems with the interpreter](https://forums.macrumors.com/threads/data-science-r-and-spss-26-etc-under-rosetta-2-apple-silicon-m1.2269302/?post=29326680#post-29326680). Presumably, this user compiled R with the [experimental gFortran](https://github.com/fxcoudert/gfortran-for-macOS/releases). This suggests R may soon provide robust support for this architecture. In the short term, R users should be aware of [R's expectations for NaN values](https://developer.r-project.org/Blog/public/2020/11/02/will-r-work-on-apple-silicon/). Until this situation is resolved, users should be wary of using R on this architecture.
 
 ## SPM
 
@@ -126,7 +130,7 @@ Users have been able to natively compile R and [report good performance on bench
 
 ## Surfice
 
-[Surfice](https://www.nitrc.org/plugins/mwiki/index.php/surfice:MainPage) is a used for visualization of neuroimaging data supporting [mesh rendering](https://en.wikipedia.org/wiki/Polygon_mesh). It is available for Linux, Windows and as a universal binary for MacOS (supporting both Intel and M1 CPUs). Unlike volume rendering, mesh rendering requires that the raw voxel data from MRI and CT scans is converted to a [mesh of triangles](http://paulbourke.net/geometry/polygonise/). Subsequently, we want to [adaptively simplify the mesh](http://www.alecjacobson.com/weblog/?p=4444), reducing the number of triangular faces while preserving curvature. For this task, Surfice provides a command for [fast quadric mesh simplification](https://github.com/sp4cerat/Fast-Quadric-Mesh-Simplification). To examine performance of different CPUs, we will apply a 95% reduction to a brain mesh. The figure below shows the original mesh (left column, 1486759 triangles) and the simplified mesh (right column, 74326 triangles). The upper row shows the rendered meshes - note how similar the meshes look. The low row shows the triangles, illustrating the dramatic reduction in triangles. 
+[Surfice](https://www.nitrc.org/plugins/mwiki/index.php/surfice:MainPage) is a used for visualization of neuroimaging data supporting [mesh rendering](https://en.wikipedia.org/wiki/Polygon_mesh). It is available for Linux, Windows and as a universal binary for MacOS (supporting both Intel and M1 CPUs). Unlike volume rendering, mesh rendering requires that the raw voxel data from MRI and CT scans is converted to a [mesh of triangles](http://paulbourke.net/geometry/polygonise/). Subsequently, we want to [adaptively simplify the mesh](http://www.alecjacobson.com/weblog/?p=4444), reducing the number of triangular faces while preserving curvature. For this task, Surfice provides a command for [fast quadric mesh simplification](https://github.com/sp4cerat/Fast-Quadric-Mesh-Simplification). To examine performance of different CPUs, we will apply a 95% reduction to a brain mesh. The figure below shows the original mesh (left column, 1486759 triangles) and the simplified mesh (right column, 74326 triangles). The upper row shows the rendered meshes - note how similar the meshes look. The lower row shows the triangles, illustrating the dramatic reduction in triangles. 
 
 ![mesh reduction](surfice.jpg)
 
@@ -179,4 +183,5 @@ Here is the status of a few tools I have evaluated. This selection is necessaril
  - [Forbes](https://www.forbes.com/sites/patrickmoorhead/2020/11/21/apple-macbook-pro-13-m1-reviewwhy-you-might-want-to-pass/?sh=1542cd81786a) provides a more tempered review, noting issues that early adopters may face.
  - [Phoronix](https://www.phoronix.com/scan.php?page=article&item=apple-mac-m1&num=1) explores native and translated M1 performance on many benchmarks.
  - [PugetSystems](https://www.pugetsystems.com/labs/articles/Apple-M1-MacBook-vs-PC-Desktop-Workstation-for-Adobe-Creative-Cloud-1975/) examines M1 laptops versus x86-64 workstations. The professional applications leverage multiple threads and modern GPUs to the hilt. 
+  - [Suhun Han](https://tech.ssut.me/apple-m1-chip-benchmarks-focused-on-the-real-world-programming/) investigates M1 Java performacne, including the SciMark (and also uses the AMD 3900X as a reference).
  
