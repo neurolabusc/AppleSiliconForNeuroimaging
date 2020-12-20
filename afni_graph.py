@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-#plot geometric mean for 
-# load/init/minmax/rgba processing of DigiMorph Desert Iguana
+#plot total wall clock time to complete AFNI_data6 https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/unix_tutorial/misc/install.data.html
+# s01.ap.simple  
 
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 #MacBook i5-8259U
-#Ubuntu i7-8700K
 #Ubuntu 3900X
-df = pd.DataFrame({'CPU': ['8259U','3900X','M1-x86','M1-ARM'],
-					'Time': [128.0, 86.5, 99.6, 54.0]})
+#MacBook Air M1
+df = pd.DataFrame({'CPU': ['8259U','3900X','M1-ARM'],
+					'Time': [440, 269, 174]})
 
 
 sns.set()

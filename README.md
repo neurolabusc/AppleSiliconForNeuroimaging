@@ -46,17 +46,15 @@ Four computers were tested:
 
 ## AFNI
 
-[AFNI](https://afni.nimh.nih.gov) is a popular software suite for brain imaging. It is a collection of executables written in C. Further, it relies on libraries like [motif](https://sourceforge.net/projects/motif/) that are not yet available pre-compiled for Apple Silicon. 
+[AFNI](https://afni.nimh.nih.gov) is a popular software suite for brain imaging. It is a collection of executables written in C. With a few [modifications](https://github.com/afni/afni/pull/233) it can be compiled to run natively on the Apple Silicon CPUs.
 
-However, Rosetta2 seamlessly translates Intel binaries and libraries. Here I simply copied the executables and libraries from an Intel-based macOS computer and authorized them (e.g. `xattr -dr com.apple.quarantine 3d*`). I also natively compiled motif and a few of the AFNI programs.
-
-The graph below shows the geometric mean time for applying 3dcalc and 3dvolreg to a large resting state dataset. Lower values indicate better performance. Note that the fanless M1 running actually outpaces the desktop computer.
-
-![afni](afni.png)
-
-AFNI provides a [`Bigger Speed Test`](https://sscc.nimh.nih.gov/afni/doc/misc/afni_speed/index_html) which a [1.67 GHz G4 PowerBook (released in 2005)](https://everymac.com/systems/apple/powerbook_g4/specs/powerbook_g4_1.67_15.html) laptop was able to complete in 3081 seconds. In contrast, the M1 completes this in 47 seconds. In the graph below, the computation time is presented on the vertical axis (with less time indicating faster performance) and the number of threads shown on the horizontal axis. In this test, the M1 shows very similar performance for using just the four performance cores versus also using the efficiency cores. All systems show diminishing returns for additional cores, presumably reflecting both Amdahl's law and that the memory bandwidth is being saturated. Despite this effect, the sheer number of cores in the 3900X yields the best performance. 
+AFNI provides a [`Bigger Speed Test`](https://sscc.nimh.nih.gov/afni/doc/misc/afni_speed/index_html) which a [1.67 GHz G4 PowerBook (released in 2005)](https://everymac.com/systems/apple/powerbook_g4/specs/powerbook_g4_1.67_15.html) laptop was able to complete in 3081 seconds (this is a nice reference, as it was the fastest non-Intel based laptop sold by Apple prior to the M1-based Macs). In contrast, the M1 completes this in 47 seconds. In the graph below, the computation time is presented on the vertical axis (with less time indicating faster performance) and the number of threads shown on the horizontal axis. In this test, the M1 shows very similar performance for using just the four performance cores versus also using the efficiency cores. All systems show diminishing returns for additional cores, presumably reflecting both Amdahl's law and that the memory bandwidth is being saturated. Despite this effect, the sheer number of cores in the 3900X yields the best performance. 
 
 ![afni_bench](afni_bench.png)
+
+The graph below shows the total time to compute the [AFNI_data6 s01.ap.simple script](https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/unix_tutorial/misc/install.data.html). This is a complete pipeline, analyzing fMRI activity observed in 452 volumes of data. Some programs like 3dClustSim use OpenMP acceleration (where the 12 cores of the Ryzen are a benefit), while many stages are single-threaded. This is a nice demonstration of the real world performance of this architecure for a typical dataset.
+
+![afni](afni.png)
 
 ## dcm2niix
 
