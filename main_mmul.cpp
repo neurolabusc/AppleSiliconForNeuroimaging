@@ -53,6 +53,11 @@ mmul: min/mean	282	284	ms
 mmulBLAS: min/mean	820	821	ms
 differences 0%, max difference 0
 
+This test can be modified to evaluate Intel MKL by setting
+  #include "mkl.h"
+https://software.intel.com/content/www/us/en/develop/documentation/mkl-tutorial-c/top/multiplying-matrices-using-dgemm.html
+
+
  */
 #include <cmath>
 #include <stdio.h>
@@ -114,7 +119,8 @@ long timediff(double startTimeMsec, double endTimeMsec) {
 
 
 //naive matrix multiplication, for optimization see http://apfel.mathematik.uni-ulm.de/~lehn/sghpc/gemm/
-void mmul(const flt *A, size_t  IA, const flt *B, size_t  IB, flt *C, size_t  IC, size_t M, size_t N, size_t P) {
+//void mmul(const flt * __restrict__ A, size_t  IA, const flt * __restrict__ B, size_t  IB, flt * __restrict__ C, size_t  IC, size_t M, size_t N, size_t P) {
+void mmul(const flt * A, size_t  IA, const flt * B, size_t  IB, flt * C, size_t  IC, size_t M, size_t N, size_t P) {
  /*   A is regarded as a two-dimensional matrix with dimemnsions [M][P]
     and stride IA.  B is regarded as a two-dimensional matrix with
     dimemnsions [P][N] and stride IB.  C is regarded as a
@@ -140,7 +146,7 @@ These compute:
 		} //for m
 		return;	
 	} 
-	//#define cptr //optional C pointer trict does not seem to help with modern compilers at high optimization levels
+	//#define cptr //optional C pointer trick does not seem to help with modern compilers at high optimization levels
 	#ifdef cptr
 	flt * Cp = C;
     for (size_t m = 0; m < M; ++m) {
@@ -185,7 +191,7 @@ void svesq(const flt *A, size_t IA, flt *C, size_t N) {
 
 /*
 //Matlab equivalence
-//maxNumCompThreads(N
+maxNumCompThreads(1)
 m = 485776; % voxels
 n = 16; %statistical contrast, e.g "1 0 0" 
 p = 120; % shared: participants
@@ -203,7 +209,8 @@ for i = 1:reps
 	sm = sm + tm;
 	mn = min(tm, mn);
 end
-fprintf('mmul: min/mean\t%g\t%g\tms\n', mn, sm/reps);*/
+fprintf('mmul: min/mean\t%g\t%g\tms\n', mn, sm/reps);
+*/
 
 void tst_mmul(int reps) {
 	/*
