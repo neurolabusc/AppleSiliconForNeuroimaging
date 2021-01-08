@@ -1,101 +1,136 @@
 #undef DT32
-//#define DT32 //<- This should be the ONLY difference between core32 and core64!
+#define DT32 //<- This should be the ONLY difference between core32 and core64!
 
 #ifdef DT32
- #define flt float
+	#define flt float
 #else
- #define flt double
+	#define flt double
 #endif
 
 /* 
 This program tests matrix multiplication for a naive C implementation versus a blas optimized for the architecture.
 
 The test simulates the inner loop for General Linear Model t-tests, which are computed thousands of times for permutation threshod testing
- m = 485776; //<- voxels
- n = 16; //statistical contrast, e.g "1 0 0" 
- p = 120; //<- shared: participants
-    A[m][p]         A[(m*P+p)*IA]
-    B[p][n]         B[(p*N+n)*IB]
-    C[m][n] 	    C[(m*N+n)*IC]
- c = a * b
+	m = 485776; //<- voxels
+	n = 16; //statistical contrast, e.g "1 0 0" 
+	p = 120; //<- shared: participants
+	A[m][p]  A[(m*P+p)*IA]
+	B[p][n]  B[(p*N+n)*IB]
+	C[m][n]  C[(m*N+n)*IC]
+	c = a * b
 
 To compile on MacOS: M1 MacBook Air
 
-g++ -O3 -o tst main_mmul.cpp  -framework Accelerate -target arm64-apple-macos11 -mmacosx-version-min=11.0 -I/Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/Headers
-
+g++ -O3 -o tst main_mmul.cpp -framework Accelerate -target arm64-apple-macos11 -mmacosx-version-min=11.0 -I/Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/Headers
 export VECLIB_MAXIMUM_THREADS=1
-
-time ./tst
+./tst
 matrix multiplication 10 repetitions 64-bit
 mmul: min/mean	530	531	ms
 mmulBLAS: min/mean	16	18	ms
 mmulDSP: min/mean	16	20	ms
 differences 36.8881%, max difference 2.13163e-14
-./tst  6.06s user 0.10s system 99% cpu 6.158 tot
+matrix multiplication 10 repetitions 32-bit
+mmul: min/mean	530	530	ms
+mmulBLAS: min/mean	11	11	ms
+mmulDSP: min/mean	11	11	ms
+differences 36.8648%, max difference 1.14441e-05
 
 To compile on Ubuntu: Ryzen 3900X
 
 sudo apt-get install libblas-dev
+matrix multiplication 10 repetitions 64-bit
 c++ -O3 main_mmul.cpp -lblas -o tst; ./tst
 mmul: min/mean	279	281	ms
 mmulBLAS: min/mean	86	86	ms
 differences 36.9339%, max difference 2.13163e-14
+matrix multiplication 10 repetitions 32-bit
+mmul: min/mean	178	179	ms
+mmulBLAS: min/mean	61	63	ms
+differences 36.9856%, max difference 1.14441e-05
 
 This test can be modified to evaluate gsl_blas_dgemm by setting
- #include <gsl/gsl_blas.h>
-and using
- gsl_blas_dgemm
-gsl_blas seems to underperform the naive implementation
 
-c++ -O3 main_mmul.cpp -lgslcblas -o tst; ./tst
+c++ -O3 main_mmul.cpp -lgslcblas -DGSL -o tst; ./tst
 matrix multiplication 10 repetitions 64-bit
 mmul: min/mean	282	284	ms
 mmulBLAS: min/mean	820	821	ms
 differences 0%, max difference 0
+matrix multiplication 10 repetitions 32-bit
+mmul: min/mean	143	144	ms
+mmulBLAS: min/mean	921	923	ms
+differences 0%, max difference 0
 
 This test can be modified to evaluate Intel MKL by setting
-  #include "mkl.h"
-https://software.intel.com/content/www/us/en/develop/documentation/mkl-tutorial-c/top/multiplying-matrices-using-dgemm.html
+ https://software.intel.com/content/www/us/en/develop/documentation/mkl-tutorial-c/top/multiplying-matrices-using-dgemm.html
+ https://danieldk.eu/Posts/2020-08-31-MKL-Zen.html
 
+sudo apt install libmkl-full-dev
+g++ -O3 main_mmul.cpp -o tstMKL -DMKL -I/usr/include/mkl -L/usr/lib/x86_64-linux-gnu/ -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl
+./tstMKL
+matrix multiplication 10 repetitions 64-bit
+mmul: min/mean	306	308	ms
+mmulBLAS: min/mean	14	18	ms
+differences 48.683%, max difference 6.39488e-14
+* matrix multiplication 10 repetitions 32-bit
+mmul: min/mean	157	159	ms
+mmulBLAS: min/mean	7	9	ms
+differences 36.9856%, max difference 1.14441e-05
+
+export MKL_NUM_THREADS=1
+./tstMKL
+matrix multiplication 10 repetitions 64-bit
+mmul: min/mean	293	297	ms
+mmulBLAS: min/mean	55	58	ms
+differences 36.9339%, max difference 2.13163e-14
+matrix multiplication 10 repetitions 32-bit
+mmul: min/mean	152	153	ms
+mmulBLAS: min/mean	28	31	ms
+differences 36.9856%, max difference 1.14441e-05
 
  */
 #include <cmath>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#ifdef __APPLE__    
+#ifdef __APPLE__
 	#include <vDSP.h>
 #endif
-#include <cblas.h>
+#ifdef GSL
+	#include <gsl/gsl_blas.h>
+#else
+	#ifdef MKL
+		#include <mkl.h>
+	#else
+		#include <cblas.h>
+	#endif
+#endif
 #include <time.h>
 #include <sys/time.h>
 #include <climits>
 #include <cstring>
 #if !defined (HAVE_POSIX_MEMALIGN) && !defined (_WIN32) && !defined (__APPLE__)
- #include <malloc.h>
+	#include <malloc.h>
 #endif 
 #if defined(_OPENMP) 
- #include <omp.h>
+	#include <omp.h>
 #endif 
 
-#ifdef __x86_64__    
+#ifdef __x86_64__
 	#include <immintrin.h>
 #else 
-	void *_mm_malloc(size_t size, size_t align)
-	{
-	    void *ptr;
-	    if (align == 1)
-	        return malloc(size);
-	    if (align == 2 || (sizeof(void *) == 8 && align == 4))
-	        align = sizeof(void *);
-	    if (!posix_memalign(&ptr, align, size))
-	        return ptr;
-	    return NULL;
+	void *_mm_malloc(size_t size, size_t align) {
+		void *ptr;
+		if (align == 1)
+			return malloc(size);
+		if (align == 2 || (sizeof(void *) == 8 && align == 4))
+			align = sizeof(void *);
+		if (!posix_memalign(&ptr, align, size))
+			return ptr;
+		return NULL;
 	}
 
-	void _mm_free(void *addr)
-	{
-	    free(addr);
+	void _mm_free(void *addr) {
+		free(addr);
 	}
 #endif
 
@@ -119,28 +154,29 @@ long timediff(double startTimeMsec, double endTimeMsec) {
 
 
 //naive matrix multiplication, for optimization see http://apfel.mathematik.uni-ulm.de/~lehn/sghpc/gemm/
-//void mmul(const flt * __restrict__ A, size_t  IA, const flt * __restrict__ B, size_t  IB, flt * __restrict__ C, size_t  IC, size_t M, size_t N, size_t P) {
-void mmul(const flt * A, size_t  IA, const flt * B, size_t  IB, flt * C, size_t  IC, size_t M, size_t N, size_t P) {
- /*   A is regarded as a two-dimensional matrix with dimemnsions [M][P]
-    and stride IA.  B is regarded as a two-dimensional matrix with
-    dimemnsions [P][N] and stride IB.  C is regarded as a
-    two-dimensional matrix with dimemnsions [M][N] and stride IC.
+//void mmul(const flt * __restrict__ A, size_t IA, const flt * __restrict__ B, size_t IB, flt * __restrict__ C, size_t IC, size_t M, size_t N, size_t P) {
+void mmul(const flt * A, size_t IA, const flt * B, size_t IB, flt * C, size_t IC, size_t M, size_t N, size_t P) {
+ /* A is regarded as a two-dimensional matrix with dimemnsions [M][P]
+	and stride IA. B is regarded as a two-dimensional matrix with
+	dimemnsions [P][N] and stride IB. C is regarded as a
+	two-dimensional matrix with dimemnsions [M][N] and stride IC.
 
-    Pseudocode:     Memory:
-    A[m][p]         A[(m*P+p)*IA]
-    B[p][n]         B[(p*N+n)*IB]
-    C[m][n]         C[(m*N+n)*IC]
+	Pseudocode:     Memory:
+	A[m][p]         A[(m*P+p)*IA]
+	B[p][n]         B[(p*N+n)*IB]
+	C[m][n]         C[(m*N+n)*IC]
 These compute:
     for (m = 0; m < M; ++m)
     for (n = 0; n < N; ++n)
-        C[m][n] = sum(A[m][p] * B[p][n], 0 <= p < P);*/
+        C[m][n] = sum(A[m][p] * B[p][n], 0 <= p < P);
+*/
 	if ((IA != 1) || (IB != 1) || (IC != 1)) { //deal with stride
-	    for (int m = 0; m < M; ++m) {
+		for (int m = 0; m < M; ++m) {
 			size_t mP = m * P;
-	    	for (size_t n = 0; n < N; ++n) {
+			for (size_t n = 0; n < N; ++n) {
 				flt ret = 0.0;
 				for (size_t p = 0; p < P; ++p)
-	        		ret += A[(mP + p) * IA] * B[(p*N + n)*IB];
+					ret += A[(mP + p) * IA] * B[(p*N + n)*IB];
 				C[(m*N + n) * IC] = ret;
 			} //for n
 		} //for m
@@ -149,16 +185,15 @@ These compute:
 	//#define cptr //optional C pointer trick does not seem to help with modern compilers at high optimization levels
 	#ifdef cptr
 	flt * Cp = C;
-    for (size_t m = 0; m < M; ++m) {
+	for (size_t m = 0; m < M; ++m) {
 		size_t mP = m * P;
-    	for (size_t n = 0; n < N; ++n) {
+		for (size_t n = 0; n < N; ++n) {
 			flt * Ap = (flt *) A;
 			Ap += mP;
 			flt * Bp = (flt *) B;
 			Bp += n;
 			flt ret = 0.0;
 			for (size_t p = 0; p < P; ++p) {
-        		//ret += A[mP + p] * B[p*N + n];
 				ret += Ap[0] * Bp[0];
 				Ap ++;
 				Bp += N;
@@ -169,12 +204,12 @@ These compute:
 		} //for n
 	} //for m	
 	#else
-	    for (size_t m = 0; m < M; ++m) {
+		for (size_t m = 0; m < M; ++m) {
 			size_t mP = m * P;
-	    	for (size_t n = 0; n < N; ++n) {
+			for (size_t n = 0; n < N; ++n) {
 				flt ret = 0.0;
 				for (size_t p = 0; p < P; ++p)
-	        		ret += A[mP + p] * B[p*N + n];
+					ret += A[mP + p] * B[p*N + n];
 				C[m*N + n] = ret;
 			} //for n
 		} //for m
@@ -213,12 +248,7 @@ fprintf('mmul: min/mean\t%g\t%g\tms\n', mn, sm/reps);
 */
 
 void tst_mmul(int reps) {
-	/*
-    A[m][p]         A[(m*P+p)*IA]
-    B[p][n]         B[(p*N+n)*IB]
-    C[m][n] 	    C[(m*N+n)*IC]
-	*/
-	printf("matrix multiplication %d repetitions %llu-bit\n",  reps, (unsigned long long) sizeof(flt)*8);
+	printf("matrix multiplication %d repetitions %llu-bit\n", reps, (unsigned long long) sizeof(flt)*8);
 	size_t m = 485776; //<- voxels
 	size_t n = 16; //statistical contrast, e.g "1 0 0" 
 	size_t p = 120; //<- shared: participants
@@ -230,19 +260,18 @@ void tst_mmul(int reps) {
 	#endif
 	flt *a = (flt *) _mm_malloc(m * p * sizeof(flt),64);
 	flt *b = (flt *) _mm_malloc(p * n * sizeof(flt),64);
-    flt *c = (flt *) _mm_malloc(m * n * sizeof(flt),64);
-    flt *cBLAS = (flt *) _mm_malloc(m * n * sizeof(flt),64);
+	flt *c = (flt *) _mm_malloc(m * n * sizeof(flt),64);
+	flt *cBLAS = (flt *) _mm_malloc(m * n * sizeof(flt),64);
 	flt *cDSP = (flt *) _mm_malloc(m * n * sizeof(flt),64);	
-	//flt ss, ssDSP; 
 	for (size_t i = 0; i < (m * p); i++)
-    	a[i] = (flt) rand()/RAND_MAX;
+		a[i] = (flt) rand()/RAND_MAX;
 	for (size_t i = 0; i < (p * n); i++)
-    	b[i] = (flt) rand()/RAND_MAX;
+		b[i] = (flt) rand()/RAND_MAX;
 	#ifdef dbug
 	for (size_t i = 0; i < (m * p); i++)
-    	a[i] = i;
+		a[i] = i;
 	for (size_t i = 0; i < (p * n); i++)
-    	b[i] = i;	
+		b[i] = i;	
 	#endif
 	long mn = INT_MAX;
 	long sum = 0.0;
@@ -253,7 +282,7 @@ void tst_mmul(int reps) {
 	for (int64_t i = 0; i < reps; i++) {
 		double startTime = clockMsec();
 		#ifdef __APPLE__ 
-		    #ifdef DT32
+			#ifdef DT32
 				vDSP_mmul(a, 1, b, 1, cDSP, 1, m, n, p);
 				//vDSP_svesq(a, 1, &ssDSP, m * n);
 			#else
@@ -274,7 +303,6 @@ void tst_mmul(int reps) {
 		#endif
 		mnBLAS = MIN(mnBLAS, timediff(startTime, clockMsec()));	
 		sumBLAS += timediff(startTime, clockMsec());
-        //naive C
 		startTime = clockMsec();
 		mmul(a, 1, b, 1, c, 1, m, n, p);
 		//svesq(a, 1, &ss, m * n);
@@ -286,9 +314,9 @@ void tst_mmul(int reps) {
 	#ifdef __APPLE__ 
 	printf("mmulDSP: min/mean\t%ld\t%ld\tms\n", mnDSP, sumDSP/reps);	
 	#endif
-    //check results
+	//check results
 	size_t nDiff = 0;
-    flt mxDiff = 0.0;
+	flt mxDiff = 0.0;
 	for (size_t i = 0; i < (m * n); i++) {
 		#ifdef dbug
 			#ifdef __APPLE__ 
@@ -302,12 +330,11 @@ void tst_mmul(int reps) {
 			mxDiff = MAX(mxDiff, fabs(c[i] - cBLAS[i]) );
 		}
 	}
-    //printf("differences %g%%, max difference %g sum-square difference %g\n", ((double) nDiff) / ((double) (m*n)) * 100.0, mxDiff, fabs(ssDSP - ss));
 	printf("differences %g%%, max difference %g\n", ((double) nDiff) / ((double) (m*n)) * 100.0, mxDiff);
 	_mm_free (a);
 	_mm_free (b);
 	_mm_free (c);
-    _mm_free (cBLAS);
+	_mm_free (cBLAS);
 	_mm_free (cDSP);										
 } //tst_mmul()
 

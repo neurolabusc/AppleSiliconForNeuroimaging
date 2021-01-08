@@ -9,9 +9,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 #MacBook Air M1
 #Ubuntu 3900X
-df = pd.DataFrame({'CPU': ['3900X','3900X', 'M1-ARM','M1-ARM'],
-					'Mode': ['scalar','blas', 'scalar','blas'],
-					'Time': [279, 86, 530, 19]})
+df = pd.DataFrame({'CPU': ['3900X','3900X','3900X','3900X','3900X','3900X','3900X','3900X','M1-ARM','M1-ARM','M1-ARM','M1-ARM'],
+					'Mode': ['scalar32','blas32','mkl32','cuda32','scalar64','blas64','mkl64','cuda64','scalar32','blas32','scalar64','blas64'],
+					'Time': [152, 61, 28, 22, 279, 86, 55, 60, 530, 11, 530, 19]})
 
 
 sns.set()
