@@ -1,5 +1,5 @@
 #undef DT32
-#define DT32 //<- This should be the ONLY difference between core32 and core64!
+//#define DT32 //<- This should be the ONLY difference between core32 and core64!
 
 #ifdef DT32
 	#define flt float
@@ -21,7 +21,7 @@ The test simulates the inner loop for General Linear Model t-tests, which are co
 
 To compile on MacOS: M1 MacBook Air
 
-g++ -O3 -o tst main_mmul.cpp -framework Accelerate -target arm64-apple-macos11 -mmacosx-version-min=11.0 -I/Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/Headers
+g++ -O3 -o tst main_mmul.cpp -DDSP -framework Accelerate -target arm64-apple-macos11 -mmacosx-version-min=11.0 -I/Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/Headers
 export VECLIB_MAXIMUM_THREADS=1
 ./tst
 matrix multiplication 10 repetitions 64-bit
@@ -33,6 +33,23 @@ matrix multiplication 10 repetitions 32-bit
 mmul: min/mean	530	530	ms
 mmulBLAS: min/mean	11	11	ms
 mmulDSP: min/mean	11	11	ms
+differences 36.8648%, max difference 1.14441e-05
+
+One may consider to use openblas
+Be aware that NumPy notes "Accelerate is buggy, disallow it"
+  https://github.com/numpy/numpy/blob/3dbf5ce5fdbc996e8abb6929a219689cf8c18e69/numpy/core/setup.py#L408
+
+export ARCHFLAGS='-arch arm64'
+brew install -s openblas
+c++ -O3 main_mmul.cpp -lblas -o tst -L/opt/homebrew/opt/openblas/lib -I/opt/homebrew/opt/openblas/include
+./tst
+matrix multiplication 10 repetitions 64-bit
+mmul: min/mean	529	531	ms
+mmulBLAS: min/mean	83	90	ms
+differences 36.8881%, max difference 2.13163e-14
+matrix multiplication 10 repetitions 32-bit
+mmul: min/mean	530	530	ms
+mmulBLAS: min/mean	50	57	ms
 differences 36.8648%, max difference 1.14441e-05
 
 To compile on Ubuntu: Ryzen 3900X
@@ -92,7 +109,7 @@ differences 36.9856%, max difference 1.14441e-05
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#ifdef __APPLE__
+#ifdef DSP //Apple's accelerate
 	#include <vDSP.h>
 #endif
 #ifdef GSL
@@ -281,7 +298,7 @@ void tst_mmul(int reps) {
 	long sumBLAS = 0.0;
 	for (int64_t i = 0; i < reps; i++) {
 		double startTime = clockMsec();
-		#ifdef __APPLE__ 
+		#ifdef DSP
 			#ifdef DT32
 				vDSP_mmul(a, 1, b, 1, cDSP, 1, m, n, p);
 				//vDSP_svesq(a, 1, &ssDSP, m * n);
@@ -311,7 +328,7 @@ void tst_mmul(int reps) {
 	}
 	printf("mmul: min/mean\t%ld\t%ld\tms\n", mn, sum/reps);
 	printf("mmulBLAS: min/mean\t%ld\t%ld\tms\n", mnBLAS, sumBLAS/reps);
-	#ifdef __APPLE__ 
+	#ifdef DSP 
 	printf("mmulDSP: min/mean\t%ld\t%ld\tms\n", mnDSP, sumDSP/reps);	
 	#endif
 	//check results
@@ -319,7 +336,7 @@ void tst_mmul(int reps) {
 	flt mxDiff = 0.0;
 	for (size_t i = 0; i < (m * n); i++) {
 		#ifdef dbug
-			#ifdef __APPLE__ 
+			#ifdef DSP
 			printf("%lu %g %g %g\n", i,c[i], cBLAS[i], cDSP[i]);
 			#else
 			printf("%lu %g %g\n", i,c[i], cBLAS[i]);
