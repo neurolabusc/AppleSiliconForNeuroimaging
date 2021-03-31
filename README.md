@@ -123,6 +123,22 @@ The graph shows compression performance as megabytes per second, with higher val
 
 ![pigz](pigz.png)
 
+## POSIX Threads (pthreads)
+
+[POSIX Threads](https://en.wikipedia.org/wiki/POSIX_Threads) is a low-level method for handling parallel threads. Here we test C-Ray a simple raytracing benchmark by [John Tsiombikas](https://github.com/jtsiomb) that provides a measure of parallel floating point CPU performance. The small size means it can be [contained in cache](http://www.sgidepot.co.uk/c-ray.html), so it is not a great measure of typical performance with real world datasets. On the other hand, it is very portable and has been used for many years. This allows us to make historical comparisons. Specifically, here we provide data for [SGI Depot Test 3](http://www.sgidepot.co.uk/c-ray.html) where the scene 'sphfract' is rendered at 1024x768 with 8X oversampling. This allows you to compare the Apple M1 to vintage CPUs like the IBM POWER3, Sun UltraSPARC IIIi, DEC Alpha 21164, Intel Itanium, and the vaunted SGI Origin350. The table below only includes the performance for the M1, 3900X and [SGI O2](https://en.wikipedia.org/wiki/SGI_O2). In many ways, the O2 can be seen as the M1 of its day: unified memory shared for compute and graphics with vertical integration of software and CPU. The M1 is 192 times faster than the fastest O2 and 962 times faster than the base model.
+
+```
+Rank   System/CPU                  (msec)  Threads   Tester       Compiler                 System/OS/Compile Line Reference/etc.
+
+Ryzen 3900X 12-core  3.8-4.6GHz      1908     120     cr           gcc 9.3                  Ubuntu 20.04. Default make settings
+Apple M1 8-core (4 big) 3.2GHz       4588      64     cr           clang version 12.0.0     macOS 11.2. Default make settings
+Apple M1 8-core (4 big) 3.2GHz      21816       1     cr           clang version 12.0.0     macOS 11.2. Default make settings
+Ryzen 3900X 12-core  3.8-4.6GHz     21981       1     cr           gcc 9.3                  Ubuntu 20.04. Default make settings
+...
+O2 R12K/400 (2MB)                  880381       1     mapesdhs     -                        IRIX
+O2 R5000PC/180                    4415713       1     mapesdhs     -                        IRIX
+```
+
 ## R
 
 Users have been able to natively compile R and [report good performance on benchmarks as well as noting that the translated R has some problems with the interpreter](https://forums.macrumors.com/threads/data-science-r-and-spss-26-etc-under-rosetta-2-apple-silicon-m1.2269302/?post=29326680#post-29326680). Presumably, this user compiled R with the [experimental gFortran](https://github.com/fxcoudert/gfortran-for-macOS/releases). This suggests R may soon provide robust support for this architecture. In the short term, R users should be aware of [R's expectations for NaN values](https://developer.r-project.org/Blog/public/2020/11/02/will-r-work-on-apple-silicon/). Until this situation is resolved, users should be wary of using R on this architecture.
@@ -204,4 +220,4 @@ The motivation for this page was to evaluate the M1 with the tools and datasets 
  - [PugetSystems](https://www.pugetsystems.com/labs/articles/Apple-M1-MacBook-vs-PC-Desktop-Workstation-for-Adobe-Creative-Cloud-1975/) examines M1 laptops versus x86-64 workstations. The professional applications leverage multiple threads and modern GPUs to the hilt. 
  - [Suhun Han](https://tech.ssut.me/apple-m1-chip-benchmarks-focused-on-the-real-world-programming/) investigates M1 Java performance, including the SciMark (and also uses the AMD 3900X as a reference).
  - [Tuh Do](https://github.com/tuhdo/tuhdo.github.io/blob/c3b417ba2fc81768f656dadf87bf3dd28ba47182/emacs-tutor/zen3_vs_m1.org) evaluates the M1, Ryzen 3900X and more latest 5800X CPUs.
- 
+ - [Dario Radeč](https://towardsdatascience.com/are-the-new-m1-macbooks-any-good-for-data-science-lets-find-out-e61a01e8cad1) compares Intel and M1 MacBooks.
