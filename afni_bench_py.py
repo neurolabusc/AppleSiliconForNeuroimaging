@@ -11,10 +11,9 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-df = pd.DataFrame({'CPU': ['8259U','8259U','8259U','8259U','8259U','8259U','3900X','3900X','3900X','3900X','3900X','3900X','M1','M1','M1','M1','M1','M1'],
-					'Threads': [1,2,4,8,12,24,1,2,4,8,12,24,1,2,4,8,12,24],
-					'Time': [124,80,67,60,np.nan,np.nan, 101,74,71,53,45,36, 67,57,48,47,np.nan,np.nan]})
-
+df = pd.DataFrame({'CPU': ['8259U','8259U','8259U','8259U','8259U','8259U','3900X','3900X','3900X','3900X','3900X','3900X','M1','M1','M1','M1','M1','M1','5950X','5950X','5950X','5950X','5950X','5950X'],
+					'Threads': [1,2,4,8,12,24,1,2,4,8,12,24,1,2,4,8,12,24,1,2,4,8,12,24],
+					'Time': [124,80,67,60,np.nan,np.nan, 101,74,71,53,45,36, 67,57,48,47,np.nan,np.nan,71, 50, 40, 33, 32, 30]})
 sns.set()
 ax = sns.lineplot(x='Threads', y='Time', hue='CPU', data=df, marker='o')
 #plt.show()

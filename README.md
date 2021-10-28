@@ -119,7 +119,7 @@ The graph shows the geometric mean for the benchmarks with lower values indicati
 
 The GZip compression format is a staple of neuroimaging, with NIfTI images often stored in GZip format. The compression is slow (relative to decompression), but the pigz tool can use multiple threads to accelerate compression. Indeed, popular tools like AFNI and dcm2niix can use pigz. A previous review of the Apple M1 CPU examined [pigz](https://arstechnica.com/gadgets/2020/11/hands-on-with-the-apple-m1-a-seriously-fast-x86-competitor/), however that review only examined the conventional version. Here we compare both conventional pigz with an accelerated version using the [CloudFlare zlib](https://github.com/cloudflare/zlib) which leverages dedicated hardware in both Intel and ARM computers. Here we tested compression of the [Silesia compression corpus](http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia) using a simple [script](https://github.com/neurolabusc/pigz-bench-python).
 
-The graph shows compression performance as megabytes per second, with higher values indicating faster performance. The horizontal axes shows the number of threads, with actual values for 1..4 and 5 representing the use of all available threads (e.g. 8 threads for the M1 but 24 for the 3900X). The shaded color for each line illustrates the performance difference between the standard pigz (bottom of shaded region) and the CloudFlare pigz (top of shaded region).
+The graph shows compression performance as megabytes per second, with higher values indicating faster performance. The horizontal axes shows the number of threads, with actual values for 1..4 and 5 representing the use of all available threads (e.g. 8 threads for the M1 but 24 for the 3900X). The shaded color for each line illustrates the performance difference between the standard pigz (bottom of shaded region) and the CloudFlare pigz (top of shaded region). The `M1pro` entry refers to the base model M1 Pro CPU (with 6 performance cores and 2 efficiency cores).
 
 ![pigz](pigz.png)
 
@@ -130,9 +130,13 @@ The graph shows compression performance as megabytes per second, with higher val
 ```
 Rank   System/CPU                  (msec)  Threads   Tester       Compiler                 System/OS/Compile Line Reference/etc.
 
+Ryzen 5950X 16-core  3.4-4.9GHz      1376     120     cr           gcc 11.2                 Ubuntu 21.11. Default make settings
 Ryzen 3900X 12-core  3.8-4.6GHz      1908     120     cr           gcc 9.3                  Ubuntu 20.04. Default make settings
+Apple M1 8-core (6 big) 3.2GHz       3487      64     cr           clang version 13.0.0     macOS 12.0. Default make settings
 Apple M1 8-core (4 big) 3.2GHz       4588      64     cr           clang version 12.0.0     macOS 11.2. Default make settings
 Intel i5-8259u 4-core 2.3GHz        11827      64     cr           clang version 11.0.0     macOS 10.14. Default make settings
+Ryzen 5950X 16-core  3.4-4.9GHz     19605       1     cr           gcc 11.2                 Ubuntu 21.11. Default make settings
+Apple M1 8-core (6 big) 3.2GHz      21334       1     cr           clang version 13.0.0     macOS 12.0. Default make settings
 Apple M1 8-core (4 big) 3.2GHz      21816       1     cr           clang version 12.0.0     macOS 11.2. Default make settings
 Ryzen 3900X 12-core  3.8-4.6GHz     21981       1     cr           gcc 9.3                  Ubuntu 20.04. Default make settings
 Intel i5-8259u 4-core 2.3GHz        72753       1     cr           clang version 11.0.0     macOS 10.14. Default make settings
@@ -205,7 +209,7 @@ Here is the status of a few tools I have evaluated. This selection is necessaril
    - [MRIcron](https://github.com/neurolabusc/MRIcron/releases)
    - [Surfice](https://github.com/neurolabusc/surf-ice/releases)
  - Translated Applications Appear to Function
-   - [AFNI](https://afni.nimh.nih.gov) note [experimental native support](https://github.com/afni/afni/pull/233) 
+   - [AFNI](https://afni.nimh.nih.gov) note [experimental native support](https://github.com/afni/afni/pull/233)
    - [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/)
    - [Slicer](https://www.slicer.org)
    - [SPM12](https://www.fil.ion.ucl.ac.uk/spm/software/spm12/)
@@ -213,8 +217,14 @@ Here is the status of a few tools I have evaluated. This selection is necessaril
    - [Paraview](https://www.paraview.org) (solution: use version [prior to 5.6.1](https://discourse.paraview.org/t/paraview-on-new-macs-with-m1-chips/5909/9))
    - [MRtrix mrview geometry shaders](https://github.com/MRtrix3/mrtrix3/issues/2247)
    - [VTK and VTK-based tools](https://gitlab.kitware.com/vtk/vtk/-/issues/18158#note_925881) (though x86-64 tools work via Rosetta)
-   
- 
+
+## Late 2021 Update: M1 Pro and M1 Max
+
+In late 2021 Apple released the M1 Pro and M1 Max. These include 6-8 performance CPUs, 2 efficiency CPUs, and 14-32 GPU cores, more RAM bandwidth, faster disks, and allow for more RAM. Apple has also provided patches that [promise better NumPy performance](https://github.com/numpy/numpy/pull/20131). Similar to more extensive tests by [others](https://www.anandtech.com/show/17024/apple-m1-max-performance-review/5), the single-threaded performance is relatively unchanged, while multi-threaded operations can see a dramatic boost. These new computers seem targeted for Apple's core markets of photography, audio and video production. This page now includes details of from a base model M1 Pro (with 6 performance cores).
+
+Several core tools used in neuroimaging continue to run in translation, including FSL and Matlab 2021b. The GPU in the original M1 was already sufficient for visualization. The GPUs still do not support double precision calculations, and Apple does not support tools that aid in porting CUDA tools to Metal (e.g. AMDs GPUFORT). Therefore, neuroimaging tools can not harness the immense computational promise of the M1 Max GPU. If future hardware addresses these limitations, Apple Silicon would be well positioned for scientific applications.
+
+Several tests now also include data for the Ryzen AMD 5950X, which does show improved per-thread performance relative its predecessors.
 
 ## Links
 
@@ -229,4 +239,5 @@ The motivation for this page was to evaluate the M1 with the tools and datasets 
  - [Tuh Do](https://github.com/tuhdo/tuhdo.github.io/blob/c3b417ba2fc81768f656dadf87bf3dd28ba47182/emacs-tutor/zen3_vs_m1.org) evaluates the M1, Ryzen 3900X and more latest 5800X CPUs.
  - [Dario Radeč](https://towardsdatascience.com/are-the-new-m1-macbooks-any-good-for-data-science-lets-find-out-e61a01e8cad1) compares Intel and M1 MacBooks.
  - Dimitrios Kechagias describes [Perl performance on the M1](http://blogs.perl.org/users/dimitrios_kechagias/2021/04/perl-performance-on-apple-m1.html)
+ - [Will Usher](https://www.willusher.io/graphics/2020/12/20/rt-dive-m1) explores ray tracing performance on the M1.
  - [Yining Karl Li](https://github.com/betajippity) provides notes and benchmarks for adapting his Takua Renderer to the M1, see [part 1](https://blog.yiningkarlli.com/2021/05/porting-takua-to-arm-pt1.html) and [part2](https://blog.yiningkarlli.com/2021/07/porting-takua-to-arm-pt2.html)
