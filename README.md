@@ -131,11 +131,13 @@ Rank   System/CPU                  (msec)  Threads   Tester       Compiler      
 
 Ryzen 5950X 16-core  3.4-4.9GHz      1376     120     cr           gcc 11.2                 Ubuntu 21.11. Default make settings
 Ryzen 3900X 12-core  3.8-4.6GHz      1908     120     cr           gcc 9.3                  Ubuntu 20.04. Default make settings
-Apple M1 8-core (6 big) 3.2GHz       3487      64     cr           clang version 13.0.0     macOS 12.0. Default make settings
+Apple M1 Pro 10-core (8 big) 3.2GHz  2712      64     cr           clang version 13.0.0     macOS 12.0. Default make settings
+Apple M1 Pro 8-core (6 big) 3.2GHz   3487      64     cr           clang version 13.0.0     macOS 12.0. Default make settings
 Apple M1 8-core (4 big) 3.2GHz       4588      64     cr           clang version 12.0.0     macOS 11.2. Default make settings
 Intel i5-8259u 4-core 2.3GHz        11827      64     cr           clang version 11.0.0     macOS 10.14. Default make settings
 Ryzen 5950X 16-core  3.4-4.9GHz     19605       1     cr           gcc 11.2                 Ubuntu 21.11. Default make settings
-Apple M1 8-core (6 big) 3.2GHz      21334       1     cr           clang version 13.0.0     macOS 12.0. Default make settings
+Apple M1 Pro 8-core (6 big) 3.2GHz  21334       1     cr           clang version 13.0.0     macOS 12.0. Default make settings
+Apple M1 Pro 10-core (8 big) 3.2GHz 21411       1     cr           clang version 13.0.0     macOS 12.0. Default make settings
 Apple M1 8-core (4 big) 3.2GHz      21816       1     cr           clang version 12.0.0     macOS 11.2. Default make settings
 Ryzen 3900X 12-core  3.8-4.6GHz     21981       1     cr           gcc 9.3                  Ubuntu 20.04. Default make settings
 Intel i5-8259u 4-core 2.3GHz        72753       1     cr           clang version 11.0.0     macOS 10.14. Default make settings
