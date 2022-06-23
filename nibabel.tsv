@@ -30,3 +30,11 @@ time pytest -c ./pytest.benchmark.ini ./bench_fileslice.py	13.821
 time pytest -c ./pytest.benchmark.ini ./bench_finite_range.py	2.194
 time pytest -c ./pytest.benchmark.ini ./bench_load_save.py	5.295
 time pytest -c ./pytest.benchmark.ini ./bench_streamlines.py	8.843
+M1-ARM numpy 1.23	
+function	time
+time pytest -c ./pytest.benchmark.ini ./bench_array_to_file.py	6.24
+time pytest -c ./pytest.benchmark.ini ./bench_arrayproxy_slicing.py	452.36
+time pytest -c ./pytest.benchmark.ini ./bench_fileslice.py	13.74
+time pytest -c ./pytest.benchmark.ini ./bench_finite_range.py	0.94
+time pytest -c ./pytest.benchmark.ini ./bench_load_save.py	4.34
+time pytest -c ./pytest.benchmark.ini ./bench_streamlines.py	8.78
