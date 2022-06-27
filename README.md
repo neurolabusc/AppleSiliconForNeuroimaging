@@ -96,13 +96,13 @@ The second test examines the GPU compute performance, looking at generation of t
 
 ## NiBabel
 
-[NiBabel](https://nipy.org/nibabel/) is a collection of neuroimaging related Python scripts and utilities. It provides [benchmarks](https://nipy.org/nibabel/reference/nibabel.benchmarks.html) for performance and regression testing. While both Python 2.7 and 3 are provided with M1 computers, core Python libraries like numpy and scipy are not yet available as natively compiled code. For these tests, [miniconda](https://docs.conda.io/en/latest/miniconda.html) was installed, and the miniconda `pip` program was used to install x86-64 libraries (numpy, nibabel, pandas, seaborn). Rosetta2 seamlessly translated the x86-64 code the first time the libraries were launched. While native performance will surely be better, here we test the available translations.
+[NiBabel](https://nipy.org/nibabel/) is a collection of neuroimaging related Python scripts and utilities. It provides [benchmarks](https://nipy.org/nibabel/reference/nibabel.benchmarks.html) for performance and regression testing.
 
 [Python natively supports the M1](https://github.com/conda-forge/miniforge#download) including native support for many popular libraries including numpy and scipy (though not [DIPY](https://github.com/tee-ar-ex/trx-python/issues/23)). Users will want to ensure that they install numpy 1.23 or later [to exploit SIMD optimizations](https://github.com/numpy/numpy/issues/17989)).
 
 Note that many Python libraries do not yet support this hardware, so in practice you will have to disable this version for many tasks (`conda deactivate`). It does seem like packages that do not install with `pip` can be installed using commands of the form [`conda install opencv`](https://github.com/neurolabusc/AppleSiliconForNeuroimaging/issues/2).
 
-The graph shows the geometric mean for the benchmarks with lower values indicating faster performance. 
+The graph shows the geometric mean for the benchmarks with lower values indicating faster performance.
  
 ![nibabel](nibabel.png)
 
