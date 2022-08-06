@@ -130,7 +130,7 @@ This table includes an Intel Alder Lake 12900HK with 45w base power and 115w pea
 
 ```
 Rank   System/CPU                  (msec)  Threads   Tester       Compiler                 System/OS/Compile Line Reference/etc.
-Ampere Altra A1 3.0GHz 160-core       413       1     cr           gcc 8.5.0
+Ampere Altra A1 3.0GHz 160-core       413     200     cr           gcc 8.5.0
 Ryzen 5950X 16-core  3.4-4.9GHz      1376     120     cr           gcc 11.2                 Ubuntu 21.11. Default make settings
 Ryzen 3900X 12-core  3.8-4.6GHz      1908     120     cr           gcc 9.3                  Ubuntu 20.04. Default make settings
 Intel i9 12900HK  2.5-5.0GHz         2320     120     lb
