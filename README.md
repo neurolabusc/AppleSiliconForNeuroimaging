@@ -124,11 +124,13 @@ The graph shows compression performance as megabytes per second, with higher val
 
 ## POSIX Threads (pthreads)
 
-[POSIX Threads](https://en.wikipedia.org/wiki/POSIX_Threads) is a low-level method for handling parallel threads. Here we test C-Ray a simple raytracing benchmark by [John Tsiombikas](https://github.com/jtsiomb) that provides a measure of parallel floating point CPU performance. The small size means it can be [contained in cache](http://www.sgidepot.co.uk/c-ray.html), so it is not a great measure of typical performance with real world datasets. On the other hand, it is very portable and has been used for many years. This allows us to make historical comparisons. Specifically, here we provide data for [SGI Depot Test 3](http://www.sgidepot.co.uk/c-ray.html) where the scene 'sphfract' is rendered at 1024x768 with 8X oversampling. This allows you to compare the Apple M1 to vintage CPUs like the IBM POWER3, Sun UltraSPARC IIIi, DEC Alpha 21164, Intel Itanium, and the vaunted SGI Origin350. The table below only includes the performance for the M1, 3900X and [SGI O2](https://en.wikipedia.org/wiki/SGI_O2). In many ways, the O2 can be seen as the M1 of its day: unified memory shared for compute and graphics with vertical integration of software and CPU. The M1 is 192 times faster than the fastest O2 and 962 times faster than the base model. This table includes an Intel Alder Lake 12900HK with 45w base power and 115w peak featured in a Dell Alienware x17 r2 laptop.
+[POSIX Threads](https://en.wikipedia.org/wiki/POSIX_Threads) is a low-level method for handling parallel threads. Here we test [C-Ray](https://github.com/neurolabusc/c-ray) a simple raytracing benchmark by [John Tsiombikas](https://github.com/jtsiomb) that provides a measure of parallel floating point CPU performance. The small size means it can be [contained in cache](http://www.sgidepot.co.uk/c-ray.html), so it is not a great measure of typical performance with real world datasets. On the other hand, it is very portable and has been used for many years. This allows us to make historical comparisons. Specifically, here we provide data for [SGI Depot Test 3](http://www.sgidepot.co.uk/c-ray.html) where the scene 'sphfract' is rendered at 1024x768 with 8X oversampling. This allows you to compare the Apple M1 to vintage CPUs like the IBM POWER3, Sun UltraSPARC IIIi, DEC Alpha 21164, Intel Itanium, and the vaunted SGI Origin350. The table below only includes the performance for the M1, 3900X and [SGI O2](https://en.wikipedia.org/wiki/SGI_O2). In many ways, the O2 can be seen as the M1 of its day: unified memory shared for compute and graphics with vertical integration of software and CPU. The M1 is 192 times faster than the fastest O2 and 962 times faster than the base model.
+
+This table includes an Intel Alder Lake 12900HK with 45w base power and 115w peak featured in a Dell Alienware x17 r2 laptop. Thanks to [brainhack_cloud](https://github.com/brainhackorg/brainhack_cloud) and [Oracle](https://www.oracle.com/cloud/compute/arm/) we can also evaluate an 3.0 GHz Ampere Altra with access to 160 cores and 1 TB of RAM. The single threaded performance for this task is not impressive, but the low cost of usage and huge numbers of threads make this compelling for many applications.
 
 ```
 Rank   System/CPU                  (msec)  Threads   Tester       Compiler                 System/OS/Compile Line Reference/etc.
-
+Ampere Altra A1 3.0GHz 160-core       413       1     cr           gcc 8.5.0
 Ryzen 5950X 16-core  3.4-4.9GHz      1376     120     cr           gcc 11.2                 Ubuntu 21.11. Default make settings
 Ryzen 3900X 12-core  3.8-4.6GHz      1908     120     cr           gcc 9.3                  Ubuntu 20.04. Default make settings
 Intel i9 12900HK  2.5-5.0GHz         2320     120     lb
@@ -141,7 +143,8 @@ Ryzen 5950X 16-core  3.4-4.9GHz     19605       1     cr           gcc 11.2     
 Apple M1 Pro 8-core (6 big) 3.2GHz  21334       1     cr           clang version 13.0.0     macOS 12.0. Default make settings
 Apple M1 Pro 10-core (8 big) 3.2GHz 21411       1     cr           clang version 13.0.0     macOS 12.0. Default make settings
 Apple M1 8-core (4 big) 3.2GHz      21816       1     cr           clang version 12.0.0     macOS 11.2. Default make settings
-Ryzen 3900X 12-core  3.8-4.6GHz     21981       1     cr           gcc 9.3                  Ubuntu 20.04. Default make settings
+Ryzen 3900X 12-core 3.8-4.6GHz      21981       1     cr           gcc 9.3                  Ubuntu 20.04. Default make settings
+Ampere Altra A1 3.0GHz 160-core     34563       1     cr           gcc 8.5.0
 Intel i5-8259u 4-core 2.3GHz        72753       1     cr           clang version 11.0.0     macOS 10.14. Default make settings
 ...
 O2 R12K/400 (2MB)                  880381       1     mapesdhs     -                        IRIX
