@@ -38,3 +38,11 @@ time pytest -c ./pytest.benchmark.ini ./bench_fileslice.py	13.74
 time pytest -c ./pytest.benchmark.ini ./bench_finite_range.py	0.94
 time pytest -c ./pytest.benchmark.ini ./bench_load_save.py	4.34
 time pytest -c ./pytest.benchmark.ini ./bench_streamlines.py	8.78
+Ampere Altra A1	
+function	time
+time pytest -c ./pytest.benchmark.ini ./bench_array_to_file.py	17.74
+time pytest -c ./pytest.benchmark.ini ./bench_arrayproxy_slicing.py	675.47
+time pytest -c ./pytest.benchmark.ini ./bench_fileslice.py	19.57
+time pytest -c ./pytest.benchmark.ini ./bench_finite_range.py	1.32
+time pytest -c ./pytest.benchmark.ini ./bench_load_save.py	12.13
+time pytest -c ./pytest.benchmark.ini ./bench_streamlines.py	(trackvis removed from nibabel 4)

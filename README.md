@@ -130,7 +130,9 @@ This table includes an Intel Alder Lake 12900HK with 45w base power and 115w pea
 
 ```
 Rank   System/CPU                  (msec)  Threads   Tester       Compiler                 System/OS/Compile Line Reference/etc.
-Ampere Altra A1 3.0GHz 160-core       413     200     cr           gcc 8.5.0
+Ampere Altra A1 3.0GHz 160-core       413     200     cr           gcc 8.5.0                Oracle Linux 8.6
+AMD EPYC 7551 32-core 2.0-2.55 GHz    865     200     cr           gcc 11.2                 Ubuntu 22.04. Default make settings
+Intel Xeon 8358 32-core 2.6-3.4 GHz   867     200     cr           gcc 11.2                 Ubuntu 22.04. Default make settings
 Ryzen 5950X 16-core  3.4-4.9GHz      1376     120     cr           gcc 11.2                 Ubuntu 21.11. Default make settings
 Ryzen 3900X 12-core  3.8-4.6GHz      1908     120     cr           gcc 9.3                  Ubuntu 20.04. Default make settings
 Intel i9 12900HK  2.5-5.0GHz         2320     120     lb
@@ -144,7 +146,9 @@ Apple M1 Pro 8-core (6 big) 3.2GHz  21334       1     cr           clang version
 Apple M1 Pro 10-core (8 big) 3.2GHz 21411       1     cr           clang version 13.0.0     macOS 12.0. Default make settings
 Apple M1 8-core (4 big) 3.2GHz      21816       1     cr           clang version 12.0.0     macOS 11.2. Default make settings
 Ryzen 3900X 12-core 3.8-4.6GHz      21981       1     cr           gcc 9.3                  Ubuntu 20.04. Default make settings
-Ampere Altra A1 3.0GHz 160-core     34563       1     cr           gcc 8.5.0
+Intel Xeon 8358 64-core 2.6-3.4 GHz 34091       1     cr           gcc 11.2                 Ubuntu 22.04. Default make settings
+AMD EPYC 7551 32-core 2.0-2.55 GHz  34430       1     cr           gcc 11.2                 Ubuntu 22.04. Default make settings
+Ampere Altra A1 3.0GHz 160-core     34563       1     cr           gcc 8.5.0                Oracle Linux 8.6
 Intel i5-8259u 4-core 2.3GHz        72753       1     cr           clang version 11.0.0     macOS 10.14. Default make settings
 ...
 O2 R12K/400 (2MB)                  880381       1     mapesdhs     -                        IRIX
@@ -233,7 +237,11 @@ Several tests now also include data for the Ryzen AMD 5950X, which does show imp
 
 ## Mid 2022 Update: M2
 
-In the middle of 2022 Apple released the M2 CPU. While the M1 was based on the iPhone A14 CPU, the M2 is based on the A15. Reviews of the [A15 suggest little improvement for the performance cores, substantial improvement for the efficiency cores, and dramatic improvement for the GPU](https://www.anandtech.com/show/16983/the-apple-a15-soc-performance-review-faster-more-efficient/2). For neuroimaging, the main benefit if the increase of bandwidth from 68GB/s to 100GB/s, and improved multithreading performance. Note that the M1 Pro and Max already have more bandwidth and have a higher ratio of performance to efficiency cores. Therefore, while the M2 is a meaningful improvement over the original M1, it does not threaten the larger M1s. The M2 does not support Scalable Vector Extensions (SVE) and its GPU still does not support double precision.
+In the middle of 2022 Apple released the M2 CPU. While the M1 was based on the iPhone A14 CPU, the M2 is based on the A15. Reviews of the [A15 suggest little improvement for the performance cores, substantial improvement for the efficiency cores, and dramatic improvement for the GPU](https://www.anandtech.com/show/16983/the-apple-a15-soc-performance-review-faster-more-efficient/2). For neuroimaging, the main benefit if the increase of bandwidth from 68GB/s to 100GB/s, and improved multithreading performance. Note that the M1 Pro and Max already have more bandwidth and have a higher ratio of performance to efficiency cores than the original M1. Therefore, while the M2 is a meaningful improvement over the original M1, it does not threaten the larger M1 Pro and M1 Max. The M2 does not support Scalable Vector Extensions (SVE) and its GPU still does not support double precision. Therefore, it does not substantially change the original findings of this evaluation.
+
+## ARM for the cloud
+
+While Apple does not create cloud servers, both Amazon (Graviton CPUs) and Oracle (Altra CPUs) provide ARM-based instances. In [theory](https://www.oracle.com/cloud/compute/arm/), these provide much lower costs than x86-64 instances. The [afni](#afni) and [posix](posix-threads-pthreads) sections above include the performance of three Oracle servers, [using credits provided by brainhack_cloud](https://github.com/brainhackorg/brainhack_cloud): the x86-64 Intel Xeon 8358 32-core 2.6-3.4 GHz, x86-64 AMD EPYC 7551 32-core 2.0-2.55 GHz and the ARM-based Ampere Altra A1 3.0GHz 160-core instances. The Altra appears to hold its own with the direct competitors, suggesting reasonable bandwidth and floating point performance. The parallel AFNI test is really outside the niche of the cloud computers: the Intel and AMD computers throttle substantially when many cores are loaded. An appropriate way for neuroimagers to use the cloud is to develop their scripts locally on single subjects (where time to process a single individual is the rate limiting factor) and then to process all of the data from many individuals in parallel on the cloud. The Apple M1 CPUs help fill developers have a local computer that uses the same conventions as the most financially affordable cloud solutions. However, more work will be required to bring all the tools used in neuroimaging to the ARM-based cloud instances.
 
 ## Links
 

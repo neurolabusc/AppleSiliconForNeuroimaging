@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-#plot geometric mean for 
-# load/init/minmax/rgba processing of DigiMorph Desert Iguana
+#plot geometric mean for nibabel tests (see nibabel.tsv)
 
 import pandas as pd
 import seaborn as sns
