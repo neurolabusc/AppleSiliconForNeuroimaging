@@ -100,11 +100,11 @@ The second test examines the GPU compute performance, looking at generation of t
 
 [NiBabel](https://nipy.org/nibabel/) is a collection of neuroimaging related Python scripts and utilities. It provides [benchmarks](https://nipy.org/nibabel/reference/nibabel.benchmarks.html) for performance and regression testing.
 
-[Python natively supports the M1](https://github.com/conda-forge/miniforge#download) including native support for many popular libraries including numpy and scipy (though not [DIPY](https://github.com/tee-ar-ex/trx-python/issues/23)). Users will want to ensure that they install numpy 1.23 or later [to exploit SIMD optimizations](https://github.com/numpy/numpy/issues/17989)).
+Python natively supports the M1] including native support for many popular libraries including numpy and scipy (though not [DIPY](https://github.com/tee-ar-ex/trx-python/issues/23)). Users will want to ensure that they install numpy 1.23 or later [to exploit SIMD optimizations](https://github.com/numpy/numpy/issues/17989)).
 
 Note that many Python libraries do not yet support this hardware, so in practice you will have to disable this version for many tasks (`conda deactivate`). It does seem like packages that do not install with `pip` can be installed using commands of the form [`conda install opencv`](https://github.com/neurolabusc/AppleSiliconForNeuroimaging/issues/2).
 
-The graph shows the geometric mean for the benchmarks with lower values indicating faster performance.
+The graph shows the geometric mean for the benchmarks with lower values indicating faster performance. This graph includes performance for two cloud-based ARM CPUs: the Amazon Graviton Neoverse-N1 and the [Oracle cloud Ampere Altra A1](https://github.com/brainhackorg/brainhack_cloud).
  
 ![nibabel](nibabel.png)
 
@@ -151,6 +151,7 @@ Ryzen 3900X 12-core 3.8-4.6GHz      21981       1     cr           gcc 9.3      
 Intel Xeon 8358 64-core 2.6-3.4 GHz 34091       1     cr           gcc 11.2                 Ubuntu 22.04. Default make settings
 AMD EPYC 7551 32-core 2.0-2.55 GHz  34430       1     cr           gcc 11.2                 Ubuntu 22.04. Default make settings
 Ampere Altra A1 3.0GHz 160-core     34563       1     cr           gcc 8.5.0                Oracle Linux 8.6
+Amazon Graviton Neoverse-N1         41342       1     cr           gcc 11.2                 Ubuntu 22.04. Default make settings
 Intel i5-8259u 4-core 2.3GHz        72753       1     cr           clang version 11.0.0     macOS 10.14. Default make settings
 ...
 O2 R12K/400 (2MB)                  880381       1     mapesdhs     -                        IRIX
@@ -225,8 +226,7 @@ Here is the status of a few tools I have evaluated. This selection is necessaril
    - [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/)
    - [Slicer](https://discourse.slicer.org/t/mac-m1-support/17545)
    - [SPM12](https://www.fil.ion.ucl.ac.uk/spm/software/spm12/)
- - Unsupported
-   - [Paraview](https://www.paraview.org) (solution: use version [prior to 5.6.1](https://discourse.paraview.org/t/paraview-on-new-macs-with-m1-chips/5909/9))
+   - [Paraview](https://www.paraview.org) (use [arm64 release](https://discourse.paraview.org/t/paraview-on-new-macs-with-m1-chips/5909/9))
    - [MRtrix mrview geometry shaders](https://github.com/MRtrix3/mrtrix3/issues/2247)
 
 ## Late 2021 Update: M1 Pro and M1 Max
