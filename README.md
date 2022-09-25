@@ -100,7 +100,7 @@ The second test examines the GPU compute performance, looking at generation of t
 
 [NiBabel](https://nipy.org/nibabel/) is a collection of neuroimaging related Python scripts and utilities. It provides [benchmarks](https://nipy.org/nibabel/reference/nibabel.benchmarks.html) for performance and regression testing.
 
-Python natively supports the M1] including native support for many popular libraries including numpy and scipy (though not [DIPY](https://github.com/tee-ar-ex/trx-python/issues/23)). Users will want to ensure that they install numpy 1.23 or later [to exploit SIMD optimizations](https://github.com/numpy/numpy/issues/17989)).
+Python natively supports the M1 including native support for many popular libraries including numpy and scipy (though not [DIPY](https://github.com/tee-ar-ex/trx-python/issues/23)). Users will want to ensure that they install numpy 1.23 or later [to exploit SIMD optimizations](https://github.com/numpy/numpy/issues/17989)).
 
 Note that many Python libraries do not yet support this hardware, so in practice you will have to disable this version for many tasks (`conda deactivate`). It does seem like packages that do not install with `pip` can be installed using commands of the form [`conda install opencv`](https://github.com/neurolabusc/AppleSiliconForNeuroimaging/issues/2).
 
@@ -223,6 +223,7 @@ Here is the status of a few tools I have evaluated. This selection is necessaril
    - [MRIcron](https://github.com/neurolabusc/MRIcron/releases)
    - [Surfice](https://github.com/neurolabusc/surf-ice/releases)
  - Translated Applications Appear to Function
+   - [FreeSurfer](https://github.com/freesurfer/freesurfer)
    - [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/)
    - [Slicer](https://discourse.slicer.org/t/mac-m1-support/17545)
    - [SPM12](https://www.fil.ion.ucl.ac.uk/spm/software/spm12/)
@@ -239,7 +240,7 @@ Several tests now also include data for the Ryzen AMD 5950X, which does show imp
 
 ## Mid 2022 Update: M2
 
-In the middle of 2022 Apple released the M2 CPU. While the M1 was based on the iPhone A14 CPU, the M2 is based on the A15. Reviews of the [A15 suggest little improvement for the performance cores, substantial improvement for the efficiency cores, and dramatic improvement for the GPU](https://www.anandtech.com/show/16983/the-apple-a15-soc-performance-review-faster-more-efficient/2). For neuroimaging, the main benefit if the increase of bandwidth from 68GB/s to 100GB/s, and improved multithreading performance. Note that the M1 Pro and Max already have more bandwidth and have a higher ratio of performance to efficiency cores than the original M1. Therefore, while the M2 is a meaningful improvement over the original M1, it does not threaten the larger M1 Pro and M1 Max. The M2 does not support Scalable Vector Extensions (SVE) and its GPU still does not support double precision. Therefore, it does not substantially change the original findings of this evaluation.
+In the middle of 2022 Apple released the M2 CPU. While the M1 was based on the iPhone A14 CPU, the M2 is based on the A15. Reviews of the [A15 suggest little improvement for the performance cores, substantial improvement for the efficiency cores, and dramatic improvement for the GPU](https://www.anandtech.com/show/16983/the-apple-a15-soc-performance-review-faster-more-efficient/2). For neuroimaging, the main benefit is the increase of bandwidth from 68GB/s to 100GB/s, and improved multithreading performance. Note that the M1 Pro and Max already have more bandwidth and have a higher ratio of performance to efficiency cores than the original M1. Therefore, while the M2 is a meaningful improvement over the original M1, it does not threaten the larger M1 Pro and M1 Max. The M2 does not support Scalable Vector Extensions (SVE) and its GPU still does not support double precision. Therefore, it does not substantially change the original findings of this evaluation.
 
 ## ARM for the cloud
 
