@@ -1,5 +1,7 @@
 ## About
 
+** This page is slowly becoming obsolete, as many tools have been ported to this new hardware. This page describes the potential and limitations of the hardware, many of the specific details regarding support are now dated. **
+
 Historically, Macintosh computers running macOS have been popular with brain imaging scientists. Since macOS runs Unix, users can often use the same tools on their laptop as the Linux workstations and super computers used for large datasets. However, this trend may change. First, the new [Windows Subsystem for Linux (WSL)](https://www.nemotos.net/?p=1481) has allowed Windows computers to seamlessly run Unix tools. Second, recent Macintosh computers have switched from Intel x86-64 processors to the ARM-based M1 `Apple Silicon`. This new architecture must translate existing code, and optimal performance will require tools to be recompiled. These two factors may make scientists reconsider future purchases. This page examines the potential for Apple Silicon to be used in brain imaging. 
 
 ## TL;DR
@@ -136,12 +138,14 @@ Ampere Altra A1 3.0GHz 160-core       413     200     cr           gcc 8.5.0    
 AMD EPYC 7551 32-core 2.0-2.55 GHz    865     200     cr           gcc 11.2                 Ubuntu 22.04. Default make settings
 Intel Xeon 8358 32-core 2.6-3.4 GHz   867     200     cr           gcc 11.2                 Ubuntu 22.04. Default make settings
 Ryzen 5950X 16-core  3.4-4.9GHz      1376     120     cr           gcc 11.2                 Ubuntu 21.11. Default make settings
+Apple M2 Pro 12-core (8 big) 3.7GHz  1640      64     cr           clang version 14.0.0     macOS 13.3. Default make settings
 Ryzen 3900X 12-core  3.8-4.6GHz      1908     120     cr           gcc 9.3                  Ubuntu 20.04. Default make settings
 Intel i9 12900HK  2.5-5.0GHz         2320     120     lb
 Apple M1 Pro 10-core (8 big) 3.2GHz  2712      64     cr           clang version 13.0.0     macOS 12.0. Default make settings
 Apple M1 Pro 8-core (6 big) 3.2GHz   3487      64     cr           clang version 13.0.0     macOS 12.0. Default make settings
 Apple M1 8-core (4 big) 3.2GHz       4588      64     cr           clang version 12.0.0     macOS 11.2. Default make settings
 Intel i5-8259u 4-core 2.3GHz        11827      64     cr           clang version 11.0.0     macOS 10.14. Default make settings
+Apple M2 Pro 12-core (8 big) 3.7GHz 14014       1     cr           clang version 14.0.0     macOS 13.3. Default make settings
 Intel i9 12900HK  2.5-5.0GHz        17301       1     lb
 Ryzen 5950X 16-core  3.4-4.9GHz     19605       1     cr           gcc 11.2                 Ubuntu 21.11. Default make settings
 Apple M1 Pro 8-core (6 big) 3.2GHz  21334       1     cr           clang version 13.0.0     macOS 12.0. Default make settings
@@ -222,12 +226,12 @@ Here is the status of a few tools I have evaluated. This selection is necessaril
    - [MRIcroGL](https://github.com/rordenlab/MRIcroGL12/releases)
    - [MRIcron](https://github.com/neurolabusc/MRIcron/releases)
    - [Surfice](https://github.com/neurolabusc/surf-ice/releases)
- - Translated Applications Appear to Function
+ - Translated Applications Appear to Function (~~strikethrough~~ indicates tools that offer native support in early 2023)
    - [FreeSurfer](https://github.com/freesurfer/freesurfer)
-   - [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/)
+   - ~~[FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/)~~
    - [Slicer](https://discourse.slicer.org/t/mac-m1-support/17545)
-   - [SPM12](https://www.fil.ion.ucl.ac.uk/spm/software/spm12/)
-   - [Paraview](https://www.paraview.org) (use [arm64 release](https://discourse.paraview.org/t/paraview-on-new-macs-with-m1-chips/5909/9))
+   - [SPM12](https://www.fil.ion.ucl.ac.uk/spm/software/spm12/), native support in [development release](https://github.com/spm/spm)
+   - ~~[Paraview](https://www.paraview.org)~~
    - [MRtrix mrview geometry shaders](https://github.com/MRtrix3/mrtrix3/issues/2247)
 
 ## Late 2021 Update: M1 Pro and M1 Max
