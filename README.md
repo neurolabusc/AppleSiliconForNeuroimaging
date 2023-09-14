@@ -1,6 +1,6 @@
 ## About
 
-** This page is slowly becoming obsolete, as many tools have been ported to this new hardware. This page describes the potential and limitations of the hardware, many of the specific details regarding support are now dated. **
+**This page is slowly becoming obsolete, as many tools have been ported to this new hardware. This page describes the potential and limitations of the hardware, many of the specific details regarding support are now dated.**
 
 Historically, Macintosh computers running macOS have been popular with brain imaging scientists. Since macOS runs Unix, users can often use the same tools on their laptop as the Linux workstations and super computers used for large datasets. However, this trend may change. First, the new [Windows Subsystem for Linux (WSL)](https://www.nemotos.net/?p=1481) has allowed Windows computers to seamlessly run Unix tools. Second, recent Macintosh computers have switched from Intel x86-64 processors to the ARM-based M1 `Apple Silicon`. This new architecture must translate existing code, and optimal performance will require tools to be recompiled. These two factors may make scientists reconsider future purchases. This page examines the potential for Apple Silicon to be used in brain imaging. 
 
@@ -13,9 +13,9 @@ Unless you are a developer, I would strongly discourage scientists from purchasi
 The infrastructure scientists depend on is not yet available for this architecture. Here are some of the short term limitations:
 
  - Native [R](https://developer.r-project.org/Blog/public/2020/11/02/will-r-work-on-apple-silicon/index.html) can use the unstable [R-devel 4.1](https://mac.r-project.org). However, [RStudio](https://github.com/rstudio/rstudio/issues/8652) will require [gdb](https://github.com/Homebrew/brew/issues/7857).
- - [Julia](https://github.com/JuliaLang/julia/issues/36617) does not yet natively support Apple Silicon.
+ - ~~[Julia](https://github.com/JuliaLang/julia/issues/36617) does not yet natively support Apple Silicon.~~
  - Python natively supports Apple Silicon. However, [some popular neuroimaging libraries like DIPY do not yet natively support this architecture](https://github.com/tee-ar-ex/trx-python/issues/23).
- - Scientific modules of Python, R, and Julia require a [Fortran compiler](https://walkingrandomly.com/?p=6696), which is currently only available in experimental form. 
+ - ~~Scientific modules of Python, R, and Julia require a [Fortran compiler](https://walkingrandomly.com/?p=6696), which is currently only available in experimental form.~~ 
  - While Apple's C Clang compiler generates fast native code, many scientific tools will need to [wait](https://www.theregister.com/2020/11/18/apple_silicon_m1_mac_compatibility/) until gcc and gFortran compilers are available.
  - Tools like VirtualBox, VMware Fusion, Boot Camp and Parallels do not support x86-64 operating systems on Apple Silicon. Many users rely on these tools for using Windows and Linux programs on their macOS computers. Parallels and VMware Fusion Tech Preview support ARM-based Windows and Linux.
  - Docker can [support Apple Silicon](https://docs.docker.com/docker-for-mac/apple-silicon/). However, attempts to run Intel-based containers on Apple Silicon machines can crash as QEMU sometimes fails to run the container. These containers are popular with many neuroimaging tools. 
