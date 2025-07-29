@@ -1,6 +1,6 @@
 ## About
 
-**This page is slowly becoming obsolete, as many tools have been ported to this new hardware. This page describes the potential and limitations of the hardware, many of the specific details regarding support are now dated.**
+**This page is slowly becoming obsolete, as many tools have been ported to this new hardware. This page describes the potential and limitations of the hardware, many of the specific details regarding support are now dated. For more up-to-date comparisons of recent Apple Silicon systems and competing processors, see my [CPUsForNeuroimaging](https://github.com/neurolabusc/CPUsForNeuroimaging) repository.**
 
 Historically, Macintosh computers running macOS have been popular with brain imaging scientists. Since macOS runs Unix, users can often use the same tools on their laptop as the Linux workstations and super computers used for large datasets. However, this trend may change. First, the new [Windows Subsystem for Linux (WSL)](https://www.nemotos.net/?p=1481) has allowed Windows computers to seamlessly run Unix tools. Second, recent Macintosh computers have switched from Intel x86-64 processors to the ARM-based M1 `Apple Silicon`. This new architecture must translate existing code, and optimal performance will require tools to be recompiled. These two factors may make scientists reconsider future purchases. This page examines the potential for Apple Silicon to be used in brain imaging. 
 
